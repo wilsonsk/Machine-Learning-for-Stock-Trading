@@ -3,6 +3,10 @@ import sys
 import os
 import matplotlib.pyplot as plt
 
+#note -- slicing -- last value is 1 past the value you actually want to include: [1:3] -> 1 to 2 
+#colon by itself indicates all of either a row or column: [:, 3] -> all rows in 3rd column (note rule above does not apply here) -- [3:] all beyond 3
+#last row indicated by -1, 2nd to last row is -2: [-1, 1:3] -> last row with columns 1 to 2 
+
 def symbol_to_path(symbol, base_dir="./"):
 	#return CSV file path given ticker symbol
 	return os.path.join(base_dir, "{}.csv".format(str(symbol)))
@@ -43,10 +47,10 @@ def join_and_slice():
 
 	#print df1
 
-
 	#testing row slicing -- must be in chronological order -- you can remove ix function but .ix is more pythonic and robust
-	print df1.ix[start_date : end_date]
-
+	df2 = df1.ix[start_date : end_date]
+	print df2
+		
 	#testing column slicing
 	# -- a single label selects a single column
 	# -- a list of labels selects multiple columns
@@ -56,10 +60,23 @@ def join_and_slice():
 	#testing slicing through both dimensions
 	#print df1.ix['2016-08-01' : '2016-08-22', [str(sys.argv[1]), str(sys.argv[2])]]
 		
-	plot(df1)
+	plot(normalize(df2))
+
+def normalize(dframe):
+	#normalize stock prices using the first row of the dataframe
+	#normalize data so that all prices start at $1
+	# this helps us see movement (up or down) compared to the others
+	return dframe/dframe.ix[0, :]
+
 
 def plot(dframe):
-	dframe.plot()
+	#name plot via title parameter
+	ptitle = "Sample Plot"
+	#output of dframe.plot is a handler/object; assign this returned object to a variable called axis
+	axis = dframe.plot(title=ptitle, fontsize=2)
+	#x and y axis titles via handler which the dataframe generates
+	axis.set_xlabel("Date")
+	axis.set_ylabel("Adj Close Price")
 	plt.show()
 
 if __name__ == "__main__":
