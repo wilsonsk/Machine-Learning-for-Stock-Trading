@@ -8,7 +8,7 @@ symbol = sys.argv[1]
 print "retrieving stock data from " +  sys.argv[1]
 
 
-dframe = web.DataReader(symbol,  'yahoo', datetime(2000,1,1), datetime(2012,1,1))
+dframe = web.DataReader(symbol,  'yahoo', datetime(2000,1,1), datetime(2016,8,21))
 
 filename = symbol + ".csv"
 

@@ -6,8 +6,8 @@ file = sys.argv[1]
 
 def test_run():
 	dframe = pd.read_csv("./" + file)
-	print dframe['Adj Close']
-	dframe['Adj Close'].plot()
+	print dframe[['Close', 'Adj Close']]
+	dframe[['Close', 'Adj Close']].plot()
 	plt.show()
 
 
