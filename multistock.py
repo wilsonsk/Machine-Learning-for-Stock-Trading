@@ -1,20 +1,24 @@
 import pandas as pd
 import sys
 import os
+import matplotlib.pyplot as plt
 
 def symbol_to_path(symbol, base_dir="./"):
 	#return CSV file path given ticker symbol
 	return os.path.join(base_dir, "{}.csv".format(str(symbol)))
 
-def test_run():
-	start_date = '2016-08-01'
-	end_date = '2016-08-21'
-	dates = pd.date_range(start_date, end_date)
+def join_and_slice():
+	start_date = str(sys.argv[1])
+	end_date = str(sys.argv[2])
+	df1_start_date = '2000-01-01'
+	df1_end_date = '2016-08-22'
+	dates = pd.date_range(df1_start_date, df1_end_date)
 	#file = "./" + sys.argv[1]
 	#create empty dataframe with dates within the above range
 	df1 = pd.DataFrame(index=dates)
 
-	for symbol in sys.argv[1:]:
+	#slice argv from index 3 to as many args exist
+	for symbol in sys.argv[3:]:
 		#index_col used because df1 uses date index, whereas dfCsvFile uses standard integer index; need to index dfCsvFile by date to match df1 
 		#convert dates present in dfCsvFile to datetime objects via parse_dates=True 
 		#usecols used for specifying desired columns, Date and Adj Close 
@@ -37,7 +41,29 @@ def test_run():
 		
 		df1 = df1.join(dfCsvFile, how='inner')
 
-	print df1
+	#print df1
+
+
+	#testing row slicing -- must be in chronological order -- you can remove ix function but .ix is more pythonic and robust
+	print df1.ix[start_date : end_date]
+
+	#testing column slicing
+	# -- a single label selects a single column
+	# -- a list of labels selects multiple columns
+	#print df1[str(sys.argv[1])]
+
+
+	#testing slicing through both dimensions
+	#print df1.ix['2016-08-01' : '2016-08-22', [str(sys.argv[1]), str(sys.argv[2])]]
+		
+	plot(df1)
+
+def plot(dframe):
+	dframe.plot()
+	plt.show()
 
 if __name__ == "__main__":
-	test_run()
+	if len(sys.argv) > 3:
+		join_and_slice()
+	else:
+		print "usage: python multistock.py <start_date: yr-month-day> <end_date: yr-month-day> <tickerSymbol> ... <tickerSymbol_n-1> <tickerSymbol_n>"
