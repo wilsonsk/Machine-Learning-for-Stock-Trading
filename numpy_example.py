@@ -133,6 +133,79 @@ def test_run():
 	speedup = t_manual / t_numpy
 	print "NumPy mean is ", speedup, "times faster than manual for loops."
 	
+	#accessing array elements
+	c = np.random.rand(5,4)
+	print "Array c:\n", c
+	element = c[3,2]
+	print "element c[3,2]: ", element
+
+	#access elements in ranges
+	print "element in range c[0, 1:3] -- get elements in row 0, columns 1 through 2"
+	print c[0, 1:3]
+
+	print "element in range c[0:2, 0:2] -- get elements in rows 0 through 1, columns 0 through 1"
+	print c[0:2, 0:2]
+
+	#slice n:m:t specifies a range that starts at n, and stops before m in steps of size t
+	print "slice n:m:t specifies a range that starts at n, and stops before m in steps of size t"
+	print "select columns 0, 2 for every row -- c[:, 0:3:2] -- gives values of column 0, skip values of column 1, and then give values in column 2"
+	print c[:, 0:3:2]
+
+	#modifying array element values
+	d = np.random.rand(5,4)
+	print "Array d:\n", d
+	
+	#assigning a value to a particular location
+	d[0,0] = 1
+	print "Modified Array d(replaced one element): -- row 0 column 0\n", d
+	
+	#assigning value to a whole row
+	d[0, :] = 2
+	print "Modified Array d(replaced a row with a single value 2): -- every column in row 0\n", d
+
+	#assigning a list to a column in an array
+	d[:, 3] = [1, 2, 3, 4, 5]
+	print "Modified Array d(replaced a column with a list of values): -- every row in column 3\n", d
+
+	#indexing an array with another array
+	e = np.random.rand(5)
+	print "Array e:\n", e
+	#accessing using list of indices -- we want value at index 1, again at 1, index 2, followed by index 3
+	indices = np.array([1, 1, 2, 3])
+	print "access using list of indices: [1,1,2,3]", e[indices]
+	
+	#indexing arrays using boolean or mask index
+	f = np.array([(20,25,10,23,26,32,10,5,0), (0,2,50,20,0,1,28,5,0)])
+	print "Array f:\n", f	
+	#example find all values that are less than the mean of the entire array
+	mean = f.mean()
+	print "Mean of f: ", mean
+	#instead of iterating through loop and finding all indices where the values are less than the mean, we use a NumPy function for speed
+	print "mask indexing of Array f: f[f<mean] = ", f[f<mean]
+	
+	#reassign mask indices with mean
+	f[f<mean] = mean
+	print "replacing mask indices with mean value: f[f<mean} = mean \n", f
+	
+
+	#arithmetic operations on arrays -- new arrays are created with each operation -- array and divisors are integers so concatenation will occur unless using fp values
+	g = np.array([(1,2,3,4,5), (10,20,30,40,50)])
+	print "Array g:\n", g
+	#multiply this whole array by 2
+	print "Multiply Array g by 2: \n", 2 * g
+
+	#arithmetic operations using 2 arrays
+	h = np.array([(100,200,300,400,500), (1,2,3,4,5)])
+	print "Array h:\n", h
+	
+	#add the 2 arrays g + h
+	print "Added Array h + Array g:\n", h+g
+
+	#muliplying 2 arrays will not give you metric prodcut, but will do element wise multiplication
+	#i.e., element h[0,0] is multiplied by g[0,0] only, h[0,1] is multiplied by g[0,1] only, etc.
+	print "Multiplying (element-wise by default) Array h * Array g:\n", h*g
+
+	
 def manual_mean(arr):
 	#manual computation of sum of all elements in given 2d array
 	sum = 0
@@ -149,6 +222,7 @@ def how_long(func, *args):
 	result = func(*args)
 	t1 = time()
 	return result, t1 - t0
+
 
 if __name__ == "__main__":
 	test_run()
