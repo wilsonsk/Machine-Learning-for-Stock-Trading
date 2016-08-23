@@ -114,7 +114,8 @@ def global_stats(dframe):
 		upper_band, lower_band = get_bollinger_bands(rolling_mean, rolling_std)
 	
 		rolling_mean.plot(label="Rolling Mean", ax=axis)
-		rolling_std.plot(label="Rolling STD", ax=axis)
+		#no need to plot rolling_std; it is just used to calculate Bollinger bands
+		#rolling_std.plot(label="Rolling STD", ax=axis)
 		upper_band.plot(label="upper band", ax=axis)
 		lower_band.plot(label="lower band", ax=axis)	
 
@@ -125,6 +126,18 @@ def global_stats(dframe):
 		
 
 	#Daily Returns: are one of the most important stats used in financial analysis
+		# are simply how much did the price go up or down on a particular day
+		# calculated : daily_ret[today] = (price[today] / price[yesterday] - 1
+		# do not iterate through days for each daily return -- too slow
+		# use NumPy functions
+	axis = dframe.plot(title="Stock Prices", label="Stock Prices")
+	daily_ret = get_daily_returns(dframe)
+	daily_ret.plot(label="Daily Returns", ax=axis)
+	axis.set_xlabel("Date")
+	axis.set_ylabel("Daily Returns")
+	axis.legend(loc='upper left')
+	axis.legend(loc='upper left')
+	plt.show()
 
 
 def get_rolling_mean(df_values, windowSize):
@@ -138,7 +151,21 @@ def get_bollinger_bands(rolling_mean, rolling_std):
 	lower_band = rolling_mean - rolling_std * 2
 	return upper_band, lower_band
 
+def get_daily_returns(dframe):
+	#first make a copy of the dataframe where we can save computed values
+	daily_ret = dframe.copy()
+	#this operation cannot be done at index = 0 because we do not have the price of the stock of the day before index 0 -- we set the values at row 0 to all 0's because 0th row now contains all NaN's
+	#.values -- allows access to the underlying NumPy array -- this is necessary because when given 2 dataframes, Pandas will try to match each row based on index when performing element wise arithmetic ops
+		# so all our efforts in shifting the values by 1 wuill be lost if we do not use the .values attribute 
+	#daily_ret[1:] = (dframe[1:] / dframe[:-1].values) - 1
+	#set daily returns for row 0 to 0  via row slicing
+	
+	#statment below is a Pandas alternative to above statements -- much easier -- note Pandas still leaves the 0th row full of NaN's
+	daily_ret = (dframe / dframe.shift(1)) - 1
+	daily_ret.ix[0, :] = 0
+	
 
+	return daily_ret
 
 if __name__ == "__main__":
 	if len(sys.argv) > 3:
