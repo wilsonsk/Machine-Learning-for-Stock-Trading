@@ -2,6 +2,7 @@ import pandas as pd
 import sys
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 #note -- slicing -- last value is 1 past the value you actually want to include: [1:3] -> 1 to 2 
 #colon by itself indicates all of either a row or column: [:, 3] -> all rows in 3rd column (note rule above does not apply here) -- [3:] all beyond 3
@@ -84,9 +85,9 @@ def plot(dframe):
 def global_stats(dframe):
 	#at least 33 global stats
 		
-	print "Mean:\n", dframe.mean()
-	print "Median:\n", dframe.median()
-	print "Std. Deviation(measure of deviation from central value; high value means price has varied a lot over time):\n", dframe.std()
+	print "Mean Adj Close Price:\n", dframe.mean()
+	print "Median Adj Close Price:\n", dframe.median()
+	print "Std. Deviation Adj Close Price(measure of deviation from central value; high value means price has varied a lot over time):\n", dframe.std()
 
 	#rolling mean: mean from a range(aka a window of prices) -- lags behind actual price aka rolling -- simple moving average -- look at where the price crosses through the rolling average
 	#hypothesis -- rolling mean may be a good representation of sort of the true underlying price of a stock, and that significant deviations from that, eventually result in a return to the mean 
@@ -125,21 +126,120 @@ def global_stats(dframe):
 		plt.show()
 		
 
-	#Daily Returns: are one of the most important stats used in financial analysis
+	#Daily Returns: are one of the most important stats used in financial analysis -- most informative when in daily returns are compared amongst different stocks
 		# are simply how much did the price go up or down on a particular day
-		# calculated : daily_ret[today] = (price[today] / price[yesterday] - 1
+		# calculated : daily_ret[today] = (price[today] / price[yesterday]) - 1
 		# do not iterate through days for each daily return -- too slow
 		# use NumPy functions
-	axis = dframe.plot(title="Stock Prices", label="Stock Prices")
+	axis = dframe.plot(title="Daily Returns", label="Stock Prices")
 	daily_ret = get_daily_returns(dframe)
-	daily_ret.plot(label="Daily Returns", ax=axis)
+	daily_ret.plot(label="Adj Close Prices", ax=axis)
 	axis.set_xlabel("Date")
 	axis.set_ylabel("Daily Returns")
 	axis.legend(loc='upper left')
-	axis.legend(loc='upper left')
 	plt.show()
 
+	#Daily Returns -- histogram: typically looks like a Gaussian or normal distribution (bell curve)
+		# can run a lot of stats on histogram of daily returns
+			# mean, std, Kurtosis
+			# Kurtosis: meaning curve or arching: tells us about the tails of the distribution
+				# assuming a normal/Gaussian distribution: the measure of Kurtosis tells how much different our histogram is from that traditional Gaussian distribution
+				# fat tails: in relation to Gaussian, there are more frequent large excursions (more occurences on tails) -- measurement of Kurtosis would be a positive number 
+				# skinny tails: many fewer occurences out on the tails in relation to Gaussian distribution -- measurement of Kurtosis would be a negative number
+	#plotting histogram
+	for symbol in dframe[0:]:
+		daily_ret_hist = get_daily_returns_histogram(dframe[symbol])
+		daily_ret = get_daily_returns(dframe)
+		mean = daily_ret[symbol].mean()
+		print "mean of Daily Returns for ", symbol, ": " , mean
+		std = daily_ret[symbol].std()
+		print "std of Daily Returns for ", symbol, ": ", std
+		#plt.axvline(mean,color='w', linestyle='dashed', linewidth=2)
+		#plt.axvline(std,color='r', linestyle='dashed', linewidth=2)
+		#plt.axvline(-std,color='r', linestyle='dashed', linewidth=2)
+		plt.show()
 
+		#compute Kurtosis
+		kurtosis = get_kurtosis(daily_ret[symbol])
+		print "Kurtosis of Daily Returns for ", symbol, ": " , kurtosis
+	
+	#plotting 2 histograms together
+	daily_ret_hist = get_daily_returns_histogram(dframe)
+	plt.show()
+
+	#compute and plot 2 histograms on same chart
+	daily_ret = get_daily_returns(dframe)
+	for symbol in dframe[0:]:
+		daily_ret[symbol].hist(bins=20, label=symbol)
+	plt.legend(loc='upper right')
+	plt.show()
+	
+	#cumulative returns: the aggregate amount an investment has gained or lost over time, independent of the period of time involved -- represented as a percentage
+		# cum_ret[today] = (price{today] / price[at beginning]) - 1 -- exactly the normalize equation
+
+	#scatter plots: number of individual points/dots; each point represents something that happened on a particular day -- if 2 stocks vs each other on a particular day 
+		# stockA has daily return of 1 and stockB has daily return of -1 then 1 point represents this
+	#slope: take set of data and fit a line through it using linear regression and to look at the stats of that linear fit
+	#one property is slope: usually referred to as beta -- shows how reactive the stock is to the market
+		# if beta(slope) is 1 then on average when the market goes up 1% that particular stock also goes up 1%
+		# if beta(slope) is 2 then if market goes up to 1% we'd expect on average that the stock would go up 2%
+	#alpha: where the slope intercepts the verticle axis -- means if alpha is positive: that this stock is actually on average performing a little bit better than the other stock everyday
+		# if alpha negative: on average this stock is returning a little bit less than the other stock everyday
+		# shows how well a stock performs with respect to other stock
+
+	#slope != correlation
+	#correlation is a measure of how tightly do these individual points fit that line -- 0 to 1 -- how close points are to the line
+		# 0 means data not correlated at all
+		# 1 means data is very highly correlated
+		# could have a shallow slope but the data tightly fitting that line, and thus a higher correlation
+		# could have a steeper line and the data fitting that line at a higher correlation
+	build_scatter_plot(dframe)
+	corr = get_correlation(dframe)
+	print "Correlation:\n", corr
+	
+
+def get_correlation(dframe):
+	daily_ret = get_daily_returns(dframe)
+	return daily_ret.corr(method='pearson')
+
+def build_scatter_plot(dframe):
+	#build scatter plot: stock1 vs. stock2
+	daily_ret = get_daily_returns(dframe)
+	symbols = []
+	for symbol in dframe[0:]:
+		symbols.append(symbol)
+	daily_ret.plot(kind='scatter', x=symbols[0], y=symbols[1]) 
+	#use ployfit() which needs x-coords and y-coords to fit a line -- y-coords are daily return values 
+	#polyfit() returns first the polynomial coefficient (beta) and second the y intercept (alpha) -- in the form y = mx + b -- m is coefficient and b is intercept
+	#the idea for plotting is for every value of x we find a value of y using the line equation y = mx +b
+	beta_stock1, alpha_stock1 = np.polyfit(daily_ret[symbols[1]], daily_ret[symbols[0]], 1)
+	beta_stock2, alpha_stock2 = np.polyfit(daily_ret[symbols[0]], daily_ret[symbols[1]], 1)
+
+	print "beta of ", symbols[0], "= ", beta_stock1
+	print "alpha of ", symbols[0], "= ", alpha_stock1	
+	print "beta of ", symbols[1], "= ", beta_stock2
+	print "alpha of ", symbols[1], "= ", alpha_stock2
+
+	plt.plot(daily_ret[symbols[0]], beta_stock2 * daily_ret[symbols[0]] + alpha_stock2, '-', color='r')
+	plt.show()	
+
+def get_kurtosis(daily_returns):
+	return daily_returns.kurtosis()
+
+def ffill_missing_data(dframe):
+	#do not interpolate data, but do not leave NaN blank either
+	#use fill forward: use last known data value until known data -- do not peek into future
+	#missing data at the beginning: use fill backwards
+	#1. use fill fowards
+	#2. use fill backwards
+		# using this order of filling prevents peeking into the future
+	#pandas fillna() does this 
+	dframe.fillna(method="ffill", inplace="TRUE") # -- does fill forwards	
+	#dframe.fillna(method="bfill", inplace="TRUE") # -- does fill backwards
+
+def bfill_missing_data(dframe):
+	dframe.fillna(method="bfill", inplace="TRUE") # -- does fill backwards
+	
 def get_rolling_mean(df_values, windowSize):
 	return pd.rolling_mean(df_values, windowSize)	
 
@@ -163,9 +263,17 @@ def get_daily_returns(dframe):
 	#statment below is a Pandas alternative to above statements -- much easier -- note Pandas still leaves the 0th row full of NaN's
 	daily_ret = (dframe / dframe.shift(1)) - 1
 	daily_ret.ix[0, :] = 0
-	
-
 	return daily_ret
+
+def get_daily_returns_histogram(dframe):
+	#default bin number = 10
+	#change bin number via bin arg
+	return dframe.hist(bins=20)
+
+def get_cumulative_return(dframe):
+	cum_ret = dframe.copy()
+	cum_ret = dframe.cumprod()
+	return cum_ret
 
 if __name__ == "__main__":
 	if len(sys.argv) > 3:
