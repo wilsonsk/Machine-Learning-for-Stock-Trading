@@ -111,7 +111,7 @@ def port_manager():
 	df1 = get_data_frame(dates)
 	#slice df1
 	df1 = df1.ix[start_date : end_date]
-	print "Adj Prices:\n", df1
+	print "Adj Close Prices:\n", df1
 	df1 = normalize(df1)	
 	print "Normalized Prices:\n", df1
 	narr_allocations, allocs = allocated(df1)
