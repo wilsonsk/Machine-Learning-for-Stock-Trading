@@ -6,10 +6,10 @@
 	# allocs (fund allocation) = [0.4, 0.4, 0.1, 0.1, ]
 
 #process -- prices df 			-> normed df 			-> allocated df 		-> position_vals 		-> portfolio_vals
-	['SPY', 'XOM', 'GOOG', 'GLD']	['SPY', 'XOM', 'GOOG', 'GLD']	['SPY', 'XOM', 'GOOG', 'GLD']	['SPY', 'XOM', 'GOOG', 'GLD']	[Portfolio]
-	  45	 34	23 	100	  1.0	 1.0	1.0 	1.0  	  0.4	 0.4	0.1 	0.1  	 400000  400000	100000 	100000 	 1000000
-	  40	 39	30 	95  	  0.8	 1.1	1.3 	0.9  	  0.32	 0.44	0.13 	0.09  	 320000	 440000	130000 	90000  	 980000
-	  ...				  ...				  ...				 ...				 ...
+#	['SPY', 'XOM', 'GOOG', 'GLD']	['SPY', 'XOM', 'GOOG', 'GLD']	['SPY', 'XOM', 'GOOG', 'GLD']	['SPY', 'XOM', 'GOOG', 'GLD']	[Portfolio]
+#	  45	 34	23 	100	  1.0	 1.0	1.0 	1.0  	  0.4	 0.4	0.1 	0.1  	 400000  400000	100000 	100000 	 1000000
+#	  40	 39	30 	95  	  0.8	 1.1	1.3 	0.9  	  0.32	 0.44	0.13 	0.09  	 320000	 440000	130000 	90000  	 980000
+#	  ...				  ...				  ...				 ...				 ...
 
 
 #first step is to normalize these prices -- gives a starting point of 1 for all prices
@@ -85,9 +85,90 @@
 				# number being square rooted == rate of sampling -- if we sampled 82 days we still use k = square root of 252 because we are sampling daily, it is the frequency at which we sample
 			
 
+import pandas as pd
+import sys
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+
+arg_check = 0
+
+def symbol_to_path(symbol, base_dir="./"):
+	#return CSV file path given ticker symbol
+	return os.path.join(base_dir, "{}.csv".format(str(symbol)))
+
+def port_manager():
+	start_val = float(sys.argv[1])	
+	start_date = str(sys.argv[2])	
+	end_date = str(sys.argv[3])
+	df1_start_date = '2000-01-01'
+	df1_end_date = '2016-08-23'
+	dates = pd.date_range(df1_start_date, df1_end_date)
+	df1 = get_data_frame(dates)
+	#slice df1
+	df1 = df1.ix[start_date : end_date]
+	print "Adj Prices:\n", df1
+	df1 = normalize(df1)	
+	print "Normalized Prices:\n", df1
+	narr_allocations, allocs = allocated(df1)
+	print "Allocated Prices: (allocated funds: ", allocs, "):\n", narr_allocations
+	narr_position_vals = position_vals(narr_allocations, start_val)	
+	print "Position Prices:\n", narr_position_vals
+	port_vals = portfolio_vals(narr_position_vals)
+	print "Portfolio Prices:\n", port_vals	
 
 
+def get_data_frame(dates):
+	tempdf = pd.DataFrame(index=dates)
+	for symbol in sys.argv[4:]:
+		#check contents of symbol for any number values -- this indicates an allocation and not a symbol
+		num_check = False
+		for i in range(0, len(symbol)):
+			if symbol[i] == '0' or symbol[i] == '1' or symbol[i] == '2' or symbol[i] == '3' or symbol[i] == '4' or symbol[i] == '5' or symbol[i] == '6' or symbol[i] == '7' or symbol[i] == '8' or symbol[i] == '9':
+				num_check =True
+				break
+		if num_check == False:
+			global arg_check
+			arg_check = arg_check + 1
+			#join .csv with new dataframe of dates
+			csv_df = pd.read_csv(symbol_to_path(symbol), index_col='Date', parse_dates=True, usecols=['Date', 'Adj Close'], na_values=['nan'])
+			#prevent clashing column names by renaming column names with each symbol
+			csv_df = csv_df.rename(columns={'Adj Close': symbol}) 
+			#inner join
+			tempdf = tempdf.join(csv_df, how='inner')
+		else:
+			break				
+	return tempdf
 
+def normalize(dframe):
+	#normalize stock prices using the first row of the dataframe
+	#normalize data so that all prices start at $1
+	# this helps us see movement (up or down) compared to the others
+	return dframe/dframe.ix[0, :]
+
+def allocated(dframe):
+	global arg_check
+	allocations = []
+	#get allocs and store in allocations tuple
+	for alloc in sys.argv[4+arg_check:]:
+		allocations.append(alloc)
+	#convert list into np.array
+	narr_allocations = np.array([allocations], dtype=np.float64)
+	return narr_allocations * dframe, allocations
+
+def position_vals(narr_allocations, start_val):
+	pos_val = narr_allocations * start_val
+	return pos_val
+
+def portfolio_vals(pos_val):
+	port_vals = pos_val.sum(axis=1)
+	return port_vals
+
+if __name__ == "__main__":
+	if len(sys.argv) >= 5:
+		port_manager()
+	else:
+		print "usage: python portfolio.py <start_value> <start_date: yr-month-day> <end_date: yr-month-day> <tickerSymbol> ... <tickerSymbol_n> <fund_allocation: 0.0 - 1.0> ... <fund_allocation_n: 0.0 - 1.0>"
 
 
 
