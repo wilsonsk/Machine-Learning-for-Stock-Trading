@@ -90,8 +90,12 @@ import sys
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
+############### Global Variables #################
 arg_check = 0
+risk_free_rate = 0
+
 
 def symbol_to_path(symbol, base_dir="./"):
 	#return CSV file path given ticker symbol
@@ -116,7 +120,22 @@ def port_manager():
 	print "Position Prices:\n", narr_position_vals
 	port_vals = portfolio_vals(narr_position_vals)
 	print "Portfolio Prices:\n", port_vals	
+	daily_ret = daily_returns(port_vals)
+	print "Daily Returns:\n", daily_ret
+	cum_ret = cumulative_returns(port_vals)
+	print "Cumulative Returns:\n", cum_ret
+	ave_daily_ret = average_daily_returns(daily_ret)
+	print "Average Daily Returns:\n", ave_daily_ret
+	std_daily_ret = std_deviation_daily_returns(daily_ret)
+	print "Standard Deviation Daily Returns:\n", std_daily_ret
+	sharpe = sharpe_ratio(daily_ret, std_daily_ret)
+	print "Sharpe Ratio of Daily Returns:"
+	print "Sample Frequency: Daily (k=252): ", sharpe * (math.sqrt(252))
+	print "Sample Frequency: Weekly (k=52): ", sharpe * (math.sqrt(52))
+	print "Sample Frequency: Monthly (k=12): ", sharpe * (math.sqrt(12))
+	print "Sample Frequency: Yearly (k=1): ", sharpe * (math.sqrt(1))
 
+############### Create Dataframe #################
 
 def get_data_frame(dates):
 	tempdf = pd.DataFrame(index=dates)
@@ -139,6 +158,8 @@ def get_data_frame(dates):
 		else:
 			break				
 	return tempdf
+
+############### Portfolio Calcs #################
 
 def normalize(dframe):
 	#normalize stock prices using the first row of the dataframe
@@ -163,6 +184,33 @@ def position_vals(narr_allocations, start_val):
 def portfolio_vals(pos_val):
 	port_vals = pos_val.sum(axis=1)
 	return port_vals
+
+############### Portfolio Stats #################
+
+def daily_returns(port_vals):
+	daily_ret = port_vals.copy()
+	daily_ret = (port_vals / port_vals.shift(1)) - 1
+	daily_ret.ix[0] = 0
+	return daily_ret
+
+def cumulative_returns(port_vals):
+	cum_ret = (port_vals[-1] / port_vals[0]) - 1
+	return cum_ret
+
+def average_daily_returns(daily_ret):
+	return daily_ret.mean()
+
+def std_deviation_daily_returns(daily_ret):
+	return daily_ret.std()
+
+def sharpe_ratio(daily_ret, std_daily_ret):
+	sharpe = daily_ret - risk_free_rate
+	sharpe = sharpe.mean()
+	sharpe = sharpe / std_daily_ret
+	return sharpe	
+
+
+
 
 if __name__ == "__main__":
 	if len(sys.argv) >= 5:
