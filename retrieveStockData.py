@@ -4,7 +4,7 @@ from datetime import datetime
 import os
 
 
-def symbol_to_path(symbol, base_dir="./"):
+def symbol_to_path(symbol, base_dir="./csv_files"):
 	#return CSV file path given ticker symbol
 	return os.path.join(base_dir, "{}.csv".format(str(symbol)))
 

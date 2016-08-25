@@ -8,7 +8,7 @@ import numpy as np
 #colon by itself indicates all of either a row or column: [:, 3] -> all rows in 3rd column (note rule above does not apply here) -- [3:] all beyond 3
 #last row indicated by -1, 2nd to last row is -2: [-1, 1:3] -> last row with columns 1 to 2 
 
-def symbol_to_path(symbol, base_dir="./"):
+def symbol_to_path(symbol, base_dir="./csv_files"):
 	#return CSV file path given ticker symbol
 	return os.path.join(base_dir, "{}.csv".format(str(symbol)))
 
