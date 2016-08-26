@@ -216,6 +216,7 @@ def sharpe_ratio(daily_ret, std_daily_ret):
 	sharpe = daily_ret - risk_free_rate
 	sharpe = sharpe.mean()
 	sharpe = sharpe / std_daily_ret
+
 	return sharpe	
 
 

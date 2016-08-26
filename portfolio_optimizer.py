@@ -38,65 +38,68 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import scipy.optimize as spo
+
 
 ############### Global Variables #################
 
+global arg_check
 arg_check = 0
+global risk_free_rate
 risk_free_rate = 0
 
-############### Portfolio Manager Functions -- interface #################
+############### Optimize Portfolio #################
 
 def symbol_to_path(symbol, base_dir="./csv_files"):
 	#return CSV file path given ticker symbol
 	return os.path.join(base_dir, "{}.csv".format(str(symbol)))
 
-def port_manager():
+def port_optimizer():
 	start_val = float(sys.argv[1])	
 	start_date = str(sys.argv[2])	
 	end_date = str(sys.argv[3])
 	df1_start_date = '2000-01-01'
 	df1_end_date = '2016-08-23'
 	dates = pd.date_range(df1_start_date, df1_end_date)
-	df1,symbols = get_data_frame(dates)
-	#print "SYMBOLS: ", symbols
-
-	#Portfolio Calcs
-	#slice df1
+	df1, symbols, allocs = get_data_frame(dates)
+	print "SYMBOLS: ", symbols, " | ALLOCATIONS: ", allocs
 	df1 = df1.ix[start_date : end_date]
 	print "Adj Close Prices:\n", df1
-	df1 = normalize(df1)	
-	print "Normalized Prices:\n", df1
-	narr_allocations, allocs = allocated(df1)
-	print "Allocated Prices: (allocated funds: ", allocs, "):\n", narr_allocations
-	narr_position_vals = position_vals(narr_allocations, start_val)	
-	print "Position Prices:\n", narr_position_vals
-	port_vals = portfolio_vals(narr_position_vals)
-	print "Portfolio Prices:\n", port_vals	
 
-	#Portfolio Stats
-	daily_ret = daily_returns(port_vals)
-	print "Daily Returns:\n", daily_ret
-	cum_ret = optimize_cumulative_returns(port_vals)
-	print "Cumulative Returns:\n", cum_ret
-	ave_daily_ret = average_daily_returns(daily_ret)
-	print "Average Daily Returns:\n", ave_daily_ret
-	std_daily_ret = std_deviation_daily_returns(daily_ret)
-	print "Standard Deviation Daily Returns:\n", std_daily_ret
-	sharpe = optimize_sharpe_ratio(daily_ret, std_daily_ret)
-	print "Sharpe Ratio of Daily Returns:"
-	print "Sample Frequency: Daily (k=252): ", sharpe * (math.sqrt(252))
-	print "Sample Frequency: Weekly (k=52): ", sharpe * (math.sqrt(52))
-	print "Sample Frequency: Monthly (k=12): ", sharpe * (math.sqrt(12))
-	print "Sample Frequency: Yearly (k=1): ", sharpe * (math.sqrt(1))
-	
-	axis = port_vals.plot(title="Daily Portfolio Value", label="Portfolio")
-	axis.set_xlabel("Date")
-	axis.set_ylabel("Price")
-	plt.legend(loc='upper left')
-	plt.show()
+	#Set Optimizer Conditions
 
-	optimize_portfolio(allocs, symbols, start_val)
-		
+        # x == the allocations that we are looking for -- optimizer will try different combinations in order to discover the best set of allocations that optimizes this function
+        # initial guess == allocs for portfolio assets
+        initial_guess = allocs
+
+        #define constraints:    # Constraints essential to get correct solution: are properties of x that must be "true"
+                                # we want the sum of our allocations to add up to 1
+                #http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
+                        # 'type': str -- constraint type: 'eq' for equality, 'ineq' for inequality
+                                # equality constraint means that the constraint function result is to be zero whereas inequality means that it is to be non-negative
+                        # 'fun': callable -- the function defining the constraint
+        constraints = ({'type': 'eq', 'fun' : lambda inputs: 1 - (np.sum(np.absolute(inputs)))})
+
+        #define range (aka boundary):
+                                # Ranges enable faster optimization: limits on values for x -- tells optimizer to only look in specific ranges for x
+                                # for each of the allocations its only worth looking for values between 0 and 1 (0% - 1%)
+                #http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
+                        # bounds: sequence, optional
+                                # Bounds for variables (only for L-BFGS-B, TNC, and SLSQP optimize algorithms)
+                                # (min, max) pairs for each element in x, defining the bounds on that parameter
+                                # use None for one of min or max when there is no bound in that direction
+        range = []
+        for i in allocs:
+                range.append((0.0, 1.0))
+
+        #Optimize Sharpe Ratio
+        optimized_res = spo.minimize(test_opt_sharpe, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+        #optimized_res = spo.minimize(optimize_cumulative_returns, initial_guess, args=(df,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+
+        print "TEST OPT ALLOC: ", symbols, optimized_res.x
+
+        optimized_res = spo.minimize(optimize_sharpe_ratio, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+        print "OPT ALLOC: ", symbols, optimized_res.x
 
 ############### Create Dataframe #################
 
@@ -122,7 +125,11 @@ def get_data_frame(dates):
 			tempdf = tempdf.join(csv_df, how='inner')
 		else:
 			break				
-	return tempdf, symbols
+	allocations = []
+	#get allocs and store in allocations tuple
+	for alloc in sys.argv[4+arg_check:]:
+		allocations.append(alloc)
+	return tempdf, symbols, allocations
 
 ############### Portfolio Calcs #################
 
@@ -132,15 +139,10 @@ def normalize(dframe):
 	# this helps us see movement (up or down) compared to the others
 	return dframe/dframe.ix[0, :]
 
-def allocated(dframe):
-	global arg_check
-	allocations = []
-	#get allocs and store in allocations tuple
-	for alloc in sys.argv[4+arg_check:]:
-		allocations.append(alloc)
+def allocated(dframe, allocations):
 	#convert list into np.array
 	narr_allocations = np.array([allocations], dtype=np.float64)
-	return narr_allocations * dframe, allocations
+	return narr_allocations * dframe
 
 def position_vals(narr_allocations, start_val):
 	pos_val = narr_allocations * start_val
@@ -169,27 +171,47 @@ def average_daily_returns(daily_ret):
 def std_deviation_daily_returns(daily_ret):
 	return daily_ret.std()
 
-def optimize_sharpe_ratio(daily_ret, std_daily_ret):
+def optimize_sharpe_ratio(allocs, df):
+	#this equation is passed to optimizer where it attempts to use different combos of parameters (allocations, prices) until sharpe ratio is minimalized (this value is reversed via * -1 because want 
+	#largest sharpe ratio value
+	start_val = float(sys.argv[1])	
+
+	#Portfolio Calcs
+	df = normalize(df)
+	narr_allocations = allocated(df, allocs)
+	narr_position_vals = position_vals(narr_allocations, start_val)	
+	port_vals = portfolio_vals(narr_position_vals)
+	
+	#Portfolio Stats
+	daily_ret = daily_returns(port_vals)
+	std_daily_ret = std_deviation_daily_returns(daily_ret)
+
 	sharpe = daily_ret - risk_free_rate
-	sharpe = sharpe.mean()
-	sharpe = sharpe / std_daily_ret
+	sharpe_numerator = sharpe.mean()
+	sharpe = sharpe_numerator / std_daily_ret
 	# sharpe * -1 to get optimal value
+
 	return sharpe * -1
 
+def test_opt_sharpe(allocs, df):
+	start_val = float(sys.argv[1])	
+	df = normalize(df)
+	allocs = df * allocs
+	postvalues = allocs * start_val
+	portfolioValues = postvalues.sum(axis=1)
 
-############### Optimize Portfolio #################
-def optimize_portfolio(allocs, symbols, start_val):
-	# x == the allocations that we are looking for -- optimizer will try different combinations in order to discover the best set of allocations that optimizes this function
-	# initial guess == allocs for portfolio assets
-	print "ALLOCS: ", allocs, ". SYMOBLS: ", symbols, ". START_VAL: ", start_val
+	dailyReturns = (portfolioValues / portfolioValues.shift(1)) - 1
+	dailyReturns = dailyReturns.ix[0:]
 
-
-
+	dailyReturnsStD = dailyReturns.std()
+	dailyReturnsMean = dailyReturns.mean()
+	sharpeRatio = dailyReturnsMean / dailyReturnsStD
+	return sharpeRatio*-1
 
 
 if __name__ == "__main__":
 	if len(sys.argv) >= 5:
-		port_manager()
+		port_optimizer()
 	else:
 		print "usage: python portfolio.py <start_value> <start_date: yr-month-day> <end_date: yr-month-day> <tickerSymbol> ... <tickerSymbol_n> <fund_allocation: 0.0 - 1.0> ... <fund_allocation_n: 0.0 - 1.0>"
 
