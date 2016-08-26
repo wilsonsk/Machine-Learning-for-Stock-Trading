@@ -38,7 +38,7 @@ def f(X):
 
 ############### Optimizer Call ####################
 
-def optimizer():
+def optimize_f():
 	initial_Xguess = 2.0
 	#arguments descriptions: 
 		# f -- function f(X) 
@@ -96,7 +96,62 @@ def errorEquation(line, data):
 	err = np.sum((data[:, 1] - (line[0] * data[:, 0] + line[1])) **2)
 	return err
 
+def fit_line(data, err_func):
+	""" Fit a line to given data points, using a supplied error function
 
+	Parameters
+	----------
+	data: 2d array where each row is a point (x,y)
+	err_func: function that computes the error between a line and observered data points
+
+	Returns line that minimizes the error function 
+	"""
+	# generate initial guess for line model (line to question)
+	l = np.float32([0, np.mean(data[:, 1])]) # slope = 0 ; y-intercept = mean(y values) -- this is just a line through a y-intercept with no slope
+
+	# plot initial guess (optional)
+	x_ends = np.float32([-5, 5])
+	plt.plot(x_ends, l[0] * x_ends + l[1], 'm--', linewidth=2.0, label="Initial Guess")
+
+	# call optimizer --  build parameters from data
+	result = optimize_line(err_func, data, l)
+	
+	return result
+
+def optimize_line(err_func, data, line):
+	# call optimizer --  build parameters from data
+	#arguments descriptions: 
+		# err_func -- error function to be minimized 
+		# data -- observed data points -- created by generating noisy data points
+		# line -- our initial guess for line model (aka line to be questioned)
+		# method='SLSQP' -- directing minimizer to use a particular minimizing algorithm called, 'SLSQP'
+		# options={'disp': True} -- verbose option
+	result = spo.minimize(err_func, line, args=(data,), method='SLSQP', options={'disp': True})
+	return result.x
+
+def build_parameters():
+	# define original line for comparison to minimizer's line
+	l_orig = np.float32([4, 2]) -- minimizer doesn't know this to test minimizer (for discovery of equation of line)
+	print "Original line: m = {}, b = {}".format(l_orig[0], l_orig[1])
+	# generate x and y values keeping in mind that the minimizer doesn't know these
+	x_orig = np.linspace(0, 10, 21)
+	y_orig = l_orig[0] * x_orig + l_orig[1]	# y = mx + b of original line
+	plt.plot(x_orig, y_orig, 'b--', linewidth=2.0, label="Original Line")
+
+	# generate noisy data points -- that fit around original line with a std deviation of 3.0 and will be used by minimizer to find a line of best fit around these points
+	noise_sigma = 3.0 	# sigma = std deviation
+	noise = np.random.normal(0, noise_sigma, y_orig.shape)
+	data = np.asarray([x_orig, y_orig + noise]).T	-- for each point along the x axis where we have data we add some noise
+	plt.plot(data[:, 0], data[:, 1], 'go', label="Data Points")
+ 
+	# call optimizer --  build parameters from data
+	l_fit = fit_line(data, errorEquation)
+	print "Fitted line: m = {}, b = {}".format(l_fit[0], l_fit[1])
+	plt.plot(data[:, 0], l_fit[0] * data[:, 0] + l_fit[1], 'r--', linewidth=2.0, label="Optimized Fit")
+
+	# create legend and plot
+	plt.legend(loc='upper left')
+	plt.show()
 
 
 
@@ -107,8 +162,8 @@ def errorEquation(line, data):
 
 
 if __name__ == "__main__":
-	optimizer()
-
+	optimize_f()
+	build_parameters()
 
 
 
