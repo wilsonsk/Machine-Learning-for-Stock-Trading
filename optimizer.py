@@ -131,7 +131,7 @@ def optimize_line(err_func, data, line):
 
 def build_parameters():
 	# define original line for comparison to minimizer's line
-	l_orig = np.float32([4, 2]) -- minimizer doesn't know this to test minimizer (for discovery of equation of line)
+	l_orig = np.float32([4, 2]) # -- minimizer doesn't know this original line; this is to test minimizer (for discovery of equation of line)
 	print "Original line: m = {}, b = {}".format(l_orig[0], l_orig[1])
 	# generate x and y values keeping in mind that the minimizer doesn't know these
 	x_orig = np.linspace(0, 10, 21)
