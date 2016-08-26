@@ -1,6 +1,7 @@
 #Optimizer: 
 	# Purpose:
-		# find minimum values of functions -- f(x) = x^2 + x^3 + 5 finds what value of x is this overall function minimized -- finds value of x input that yields lowest function value (usually called y)
+		# find minimum values of functions -- finds x such that f(x) is minimized
+			# -- f(x) = x^2 + x^3 + 5 finds what value of x is this overall function minimized -- finds value of x input that yields lowest function value (usually called y)
 		# build parameterized models based on data -- find parameters for parameterized models from data  -- ex: f(x) = mx + b
 		# refine allocations to stocks in portfolios -- decide what percentage of funds should be allocated to each stock
 	# How to use:

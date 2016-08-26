@@ -37,7 +37,8 @@
 			# daily_ret.mean()
 		# standard deviation daily returns
 			# daily_ret.std()
-		# sharpe ratio -- is a measure for calculating risk-adjusted return(i.e., consider our return in context of risk -- risk usually defined as std or volatility 
+		# sharpe ratio -- risk adjusted return 
+			# -- is a measure for calculating risk-adjusted return(i.e., consider our return in context of risk -- risk usually defined as std or volatility 
 			# -- a measure that essentially adjusts our return for that risk 
 			# -- it is the average return earned in excess of the risk-free rate per unit of volatility or total risk
 			# -- subtracting the risk-free rate from the mean return, the performance associated with risk taking activities can be isolated
@@ -136,7 +137,13 @@ def port_manager():
 	print "Sample Frequency: Weekly (k=52): ", sharpe * (math.sqrt(52))
 	print "Sample Frequency: Monthly (k=12): ", sharpe * (math.sqrt(12))
 	print "Sample Frequency: Yearly (k=1): ", sharpe * (math.sqrt(1))
-
+	
+	axis = port_vals.plot(title="Daily Portfolio Value", label="Portfolio")
+	axis.set_xlabel("Date")
+	axis.set_ylabel("Price")
+	plt.legend(loc='upper left')
+	plt.show()
+	
 ############### Create Dataframe #################
 
 def get_data_frame(dates):
