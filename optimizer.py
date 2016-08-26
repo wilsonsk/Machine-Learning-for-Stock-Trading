@@ -141,7 +141,7 @@ def build_parameters():
 	# generate noisy data points -- that fit around original line with a std deviation of 3.0 and will be used by minimizer to find a line of best fit around these points
 	noise_sigma = 3.0 	# sigma = std deviation
 	noise = np.random.normal(0, noise_sigma, y_orig.shape)
-	data = np.asarray([x_orig, y_orig + noise]).T	-- for each point along the x axis where we have data we add some noise
+	data = np.asarray([x_orig, y_orig + noise]).T	# -- for each point along the x axis where we have data we add some noise
 	plt.plot(data[:, 0], data[:, 1], 'go', label="Data Points")
  
 	# call optimizer --  build parameters from data
