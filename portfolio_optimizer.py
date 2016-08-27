@@ -92,14 +92,26 @@ def port_optimizer():
         for i in allocs:
                 range.append((0.0, 1.0))
 
-        #Optimize Sharpe Ratio
-        optimized_res = spo.minimize(test_opt_sharpe, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+        #Test: Optimize Sharpe Ratio
+        #optimized_res = spo.minimize(test_opt_sharpe, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+        #print "TEST OPT ALLOC: ", symbols, optimized_res.x
+
+	#Actual: Optimize Sharpe Ratio
+        optimized_res = spo.minimize(optimize_sharpe_ratio, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
         #optimized_res = spo.minimize(optimize_cumulative_returns, initial_guess, args=(df,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
 
-        print "TEST OPT ALLOC: ", symbols, optimized_res.x
+	#Calc Optimized Stats
+	normalized_df = normalize(df1)
+	optimized_allocations = allocated(normalized_df, optimized_res.x)
+	optimized_position_vals = position_vals(optimized_allocations, start_val)	
+	optimized_port_vals = portfolio_vals(optimized_position_vals)
 
-        optimized_res = spo.minimize(optimize_sharpe_ratio, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
-        print "OPT ALLOC: ", symbols, optimized_res.x
+	#Print Optimized Stats
+	print "Normalized Prices:\n", normalized_df
+	print "Optimized Allocations:\n", optimized_allocations
+	print "Optimized Pos Vals:\n", optimized_position_vals
+	print "Optimized Port Vals: \n", optimized_port_vals
+        print "OPTIMAL ALLOCATIONS: ", symbols, optimized_res.x
 
 ############### Create Dataframe #################
 
@@ -186,6 +198,7 @@ def optimize_sharpe_ratio(allocs, df):
 	daily_ret = daily_returns(port_vals)
 	std_daily_ret = std_deviation_daily_returns(daily_ret)
 
+	#Sharpe Ratio Calc
 	sharpe = daily_ret - risk_free_rate
 	sharpe_numerator = sharpe.mean()
 	sharpe = sharpe_numerator / std_daily_ret
