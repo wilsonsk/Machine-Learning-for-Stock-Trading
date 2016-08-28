@@ -111,19 +111,26 @@ def port_optimizer():
 	print "Optimized Pos Vals:\n", optimized_position_vals
 	print "Optimized Port Vals: \n", optimized_port_vals
 	opt_cum_ret = (optimized_port_vals[-1] / optimized_port_vals[0]) - 1
-	print "OPTIMAL CUMUMLATIVE RETURNS BASED ON OPTIMAL SHARPE RATIO: ", opt_cum_ret
-        print "OPTIMAL ALLOCATIONS: ", symbols, optimized_res.x
+	print "CUMUMLATIVE RETURNS BASED ON MINIMIZED SHARPE RATIO: ", opt_cum_ret
+        print "OPTIMAL ALLOCATIONS BASED ON MINIMIZED SHARPE RATIO: ", symbols, optimized_res.x
+	opt_sharpe = optimize_sharpe_ratio(optimized_res.x, df1)
+        print "Sharpe Ratio of Daily Returns:"
+        print "Optimized Frequency: Daily (k=252): ", opt_sharpe * (math.sqrt(252)) * -1
+        print "Optimized Frequency: Weekly (k=52): ", opt_sharpe * (math.sqrt(52)) * -1
+        print "Optimized Frequency: Monthly (k=12): ", opt_sharpe * (math.sqrt(12)) * -1
+        print "Optimized Frequency: Yearly (k=1): ", opt_sharpe * (math.sqrt(1)) * -1
+
+	#Test: Optimized Cumulative Returns
+        #optimized_res = spo.minimize(test_opt_cum, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+	#print "TEST CUM RETURNS ALLOCATIONS: ", optimized_res.x
 
 	#Actual: Optimize Cumulative Ratio
         optimized_res = spo.minimize(optimize_cumulative_returns, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
 
 	#Calc Optimized Stats
-	normalized_df = normalize(df1)
-	optimized_allocations = allocated(normalized_df, optimized_res.x)
-	optimized_position_vals = position_vals(optimized_allocations, start_val)	
-	optimized_port_vals = portfolio_vals(optimized_position_vals)
-	opt_cum_ret = (optimized_port_vals[-1] / optimized_port_vals[0]) - 1
-	print "OPTIMAL CUMUMLATIVE RETURNS: ", opt_cum_ret
+	opt_cum_ret = optimize_cumulative_returns(optimized_res.x, df1)
+	print "OPTIMAL CUMUMLATIVE RETURNS BASED ON MINIMIZED CUMULATIVE RETURNS: ", opt_cum_ret * -1
+        print "OPTIMAL ALLOCATIONS BASED ON MINIMIZED CUMULATIVE RETURNS: ", symbols, optimized_res.x
 
 ############### Create Dataframe #################
 
@@ -203,6 +210,7 @@ def std_deviation_daily_returns(daily_ret):
 	return daily_ret.std()
 
 def optimize_sharpe_ratio(allocs, df):
+	#the greater the std deviation the smaller the sharpe ratio, the larger the risk the smaller the sharpe ratio, the larger the daily return the greater the sharpe ratio
 	#this equation is passed to optimizer where it attempts to use different combos of parameters (allocations, prices) until sharpe ratio is minimalized (this value is reversed via * -1 because want 
 	#largest sharpe ratio value
 	start_val = float(sys.argv[1])	
@@ -240,6 +248,14 @@ def test_opt_sharpe(allocs, df):
 	sharpeRatio = dailyReturnsMean / dailyReturnsStD
 	return sharpeRatio*-1
 
+def test_opt_cum(allocs, df):
+	start_val = float(sys.argv[1])
+	df = normalize(df)
+	allocs = df * allocs
+	postvalues = allocs * start_val
+	portfolioValues = postvalues.sum(axis=1)
+	cumulativeReturns = (portfolioValues[-1] / portfolioValues[0]) - 1
+	return cumulativeReturns*-1
 
 if __name__ == "__main__":
 	if len(sys.argv) >= 5:
