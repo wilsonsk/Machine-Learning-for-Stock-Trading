@@ -31,7 +31,7 @@
 	# an important first stat calculation is Daily Returns -- first value is always 0 because on first day there is no change -- must exclude this value from any calculations made across all daily returns
 		# daily_ret = daily_ret[1:] -- starts at second row excludes first row
 	# Calculating Daily Returns always 4 other key stats to be calculated
-		# cumulative returns 
+		# cumulative returns -- measure of how much the value of the portfolio has gone up from the beginning to the end
 			# cum_ret = (portfolio_vals[-1] / portfolio_vals[0]) - 1 -- note portfolio_vals[-1] == last value in portfolio_vals
 		# average daily returns
 			# daily_ret.mean()

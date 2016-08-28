@@ -98,7 +98,6 @@ def port_optimizer():
 
 	#Actual: Optimize Sharpe Ratio
         optimized_res = spo.minimize(optimize_sharpe_ratio, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
-        #optimized_res = spo.minimize(optimize_cumulative_returns, initial_guess, args=(df,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
 
 	#Calc Optimized Stats
 	normalized_df = normalize(df1)
@@ -111,7 +110,20 @@ def port_optimizer():
 	print "Optimized Allocations:\n", optimized_allocations
 	print "Optimized Pos Vals:\n", optimized_position_vals
 	print "Optimized Port Vals: \n", optimized_port_vals
+	opt_cum_ret = (optimized_port_vals[-1] / optimized_port_vals[0]) - 1
+	print "OPTIMAL CUMUMLATIVE RETURNS BASED ON OPTIMAL SHARPE RATIO: ", opt_cum_ret
         print "OPTIMAL ALLOCATIONS: ", symbols, optimized_res.x
+
+	#Actual: Optimize Cumulative Ratio
+        optimized_res = spo.minimize(optimize_cumulative_returns, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
+
+	#Calc Optimized Stats
+	normalized_df = normalize(df1)
+	optimized_allocations = allocated(normalized_df, optimized_res.x)
+	optimized_position_vals = position_vals(optimized_allocations, start_val)	
+	optimized_port_vals = portfolio_vals(optimized_position_vals)
+	opt_cum_ret = (optimized_port_vals[-1] / optimized_port_vals[0]) - 1
+	print "OPTIMAL CUMUMLATIVE RETURNS: ", opt_cum_ret
 
 ############### Create Dataframe #################
 
@@ -172,7 +184,14 @@ def daily_returns(port_vals):
 	daily_ret.ix[0] = 0
 	return daily_ret
 
-def optimize_cumulative_returns(port_vals):
+def optimize_cumulative_returns(allocs, df):
+	start_val = float(sys.argv[1])	
+	#Portfolio Calcs
+	df = normalize(df)
+	narr_allocations = allocated(df, allocs)
+	narr_position_vals = position_vals(narr_allocations, start_val)	
+	port_vals = portfolio_vals(narr_position_vals)
+
 	cum_ret = (port_vals[-1] / port_vals[0]) - 1
 	# cum_ret * -1 to get optimal value
 	return cum_ret * -1
