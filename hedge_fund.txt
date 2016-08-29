@@ -1,0 +1,118 @@
+* Assets Under Management (AUM) : How much money is being managed by the fund
+* 3 types of funds:
+	1. ETF: Exchange Trade Funds: (4 letter symbols)
+		* Buy/Sell like stocks
+		* Baskets of stocks
+		* Transparent
+		* High liquidity
+		* Fund Manager compensation: -- manner in which they are paid, incentives them to trade or act in certain ways -- based on how much the value of that fund increases
+			* According to Expense Ratio (which is some percentage of the AUM) 
+			* Usually pretty low (0.01% - 1.00%)
+	2. Mutual Funds: (5 letter symbols)
+		* Buy/Sell at end of day
+		* Quarterly disclosure
+			* less transparent
+		* Fund Manager compensation: -- manner in which they are paid, incentives them to trade or act in certain ways -- based on how much the value of that fund increases
+			* According to Expense Ratio
+			* Somewhat higher than ETF's -- (0.5% - 3.00%)
+			* These managers use more discretion and supposedly "skill" and so require larger compensation
+	3. Hedge Funds: (not symbolized) -- typically have up to only 100 investors
+		* Buy/Sell by agreement
+		* No disclosure
+			* Not transparent
+		* Fund Manager compensation: -- manner in which they are paid, incentives them to trade or act in certain ways -- based on how much the value of that fund increases
+			* According to "Two and Twenty" (2% AUM + 20% profits) -- "Two" is based on the hedge fund and when they choose to take snap shots of accounting -- usually a blend between some snap 
+			shot and the profit return
+
+	ex. Incentives: How are they compensated?
+		* Two and Twenty
+			* 15% return this year
+			* $100,000,000 -> 15% -> $115,000,000
+
+			* "Two" == $100,000,000 * 0.02 = $2,000,000
+			* "Twenty" == $15,000,000 * 0.02 = $3,000,000 
+				
+	ex. Incentives: Which motivates...	Expense ratio		Two and Twenty
+			* AUM accumulation		*			*	-- if strictly driven by expense ratio, you will be spending most energy towards accumulating AUM for a higher return
+			* Profits						* 	-- only hedge fund managers make a percent of a return(profit) ETFs and Mutual Fund managers only receive expense ratio
+			* Risk Taking						*	-- ETFs and MFs managers receive no reward for risk taking; HFs rewarded for risks (profits), & no punishment
+											for risks because they still receive the "Two"
+
+* Large Cap = capitalization: i.e., how much is the company worth according to number shares that are outstanding * price of the stock (what 1 share is selling at)
+	* outstanding shares: refers to a company's stock currently held by all its shareholders, including share blocks held by institutional investors and restricted shares owned by the company's officers 
+	and insiders
+
+* How funds attract investors for hedge funds:
+	* who?
+		* individuals:
+			* a single person (wealthy) who wants to invest in fund 
+			* because a HF typically has only up to 100 investors, they want each of those investment/investor to be fairly large
+		* institutions:
+			* large retirement funds, university foundations -- very often non-profit institutions that have a very large sum of money that they need to keep somewhere and want to see an accrual 
+			in value
+		* funds of funds:
+			* group together the funds of many individuals or institutions 
+			* Manager decides which hedge funds to invest in 
+
+	* why they might invest in your fund?
+		* track record:
+			* fund has a great track record = good evidence for continual success
+			* many investors want to see a good track record for at least 5 years before they'll invest in a particular fund
+		* simulation + story:
+			* backtest/simulate your strategy
+			* simulation must be backed by a very compelling story describing that strategy; i.e., must have a reason for why this method works and it needs to make sense
+		* good portfolio fit:
+			* how your strategy fits within their portfolio
+			* ex., if your strategy is for large cap S&P500 stocks and they already have that covered, they probably wont consider you
+			however, if you are looking at small cap growth stocks and they don't yet have that part of their portfolio filled, they'll give you more consideration
+
+
+* Hedge Fund goals and metrics: when an investor is considering a particular hedge fund, they want to know what are the goals of the hedge funds, and the results of certain metrics
+	* Goals:
+		* Beat a benchmark (funds):
+			* ex. you have a strategy that looks at the stocks in the SP500(SPY: 500 stocks), you are wise at seleting certain SP500 stocks and want to beat the SP500 index as a benchmark
+			(the overall SP500 index has good and bad stocks) so if you picked the "good" ones you should beat the SP500 index 
+			* Important component: 
+				* many benchmarks (like the stock market as a whole) go down, it is of course natural that a portfolio consisting of stocks from that index might go down as well
+					* so even though the index and the fund go down, you can outperform the index by going down less and still meet performance goals if index goes down more
+		* Absolute return (funds):
+			* Goal: provide positive return no matter what
+			* usually long/short:
+				* they make positive bets in stocks they think are going to go up and negative bets in stocks they think are going to go down 
+			* objective: to make slow, gradual positive return no matter what
+			* often times, these types of funds don't make the same percentage gains as the beat a benchmark funds, but they have very low drawdowns (i.e., when the market takes a big hit
+			 they often don't)
+	* Metrics: How to measure how well a fund is meeting its goals
+		* cumulative return
+			* a measure of aggregate amount an investment has gained or lost over given time -- (val[-1] / val[0]) - 1
+			* if fund made 20% over a year, cumulative return is 0.2
+		* volatility: Standard deviation of daily returns
+			* how rapidly and aggressively the portfolio goes up and down in value -- (daily_ret.std())
+		* risk/reward: Sharpe ratio
+			* risk adjusted reward -- reward = average daily return - risk free rate ; risk = measure of standard deviation of daily returns
+			* multiply by sqrt of k (constant representing frequency of sampling: 252 = daily, 12 = monthly, 1 = yearly)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -107,18 +107,18 @@ def port_optimizer():
 
 	#Print Optimized Stats
 	print "Normalized Prices:\n", normalized_df
-	print "Optimized Allocations:\n", optimized_allocations
-	print "Optimized Pos Vals:\n", optimized_position_vals
-	print "Optimized Port Vals: \n", optimized_port_vals
+	print "Optimized (Sharpe) Allocations:\n", optimized_allocations
+	print "Optimized (Sharpe) Pos Vals:\n", optimized_position_vals
+	print "Optimized (Sharpe) Port Vals: \n", optimized_port_vals
 	opt_cum_ret = (optimized_port_vals[-1] / optimized_port_vals[0]) - 1
 	print "CUMUMLATIVE RETURNS BASED ON MINIMIZED SHARPE RATIO: ", opt_cum_ret
         print "OPTIMAL ALLOCATIONS BASED ON MINIMIZED SHARPE RATIO: ", symbols, optimized_res.x
 	opt_sharpe = optimize_sharpe_ratio(optimized_res.x, df1)
-        print "Sharpe Ratio of Daily Returns:"
-        print "Optimized Frequency: Daily (k=252): ", opt_sharpe * (math.sqrt(252)) * -1
-        print "Optimized Frequency: Weekly (k=52): ", opt_sharpe * (math.sqrt(52)) * -1
-        print "Optimized Frequency: Monthly (k=12): ", opt_sharpe * (math.sqrt(12)) * -1
-        print "Optimized Frequency: Yearly (k=1): ", opt_sharpe * (math.sqrt(1)) * -1
+        #print "Sharpe Ratio of Daily Returns:"
+        #print "Optimized Frequency: Daily (k=252): ", opt_sharpe * (math.sqrt(252)) * -1
+        #print "Optimized Frequency: Weekly (k=52): ", opt_sharpe * (math.sqrt(52)) * -1
+        #print "Optimized Frequency: Monthly (k=12): ", opt_sharpe * (math.sqrt(12)) * -1
+        #print "Optimized Frequency: Yearly (k=1): ", opt_sharpe * (math.sqrt(1)) * -1
 
 	#Test: Optimized Cumulative Returns
         #optimized_res = spo.minimize(test_opt_cum, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
@@ -128,7 +128,17 @@ def port_optimizer():
         optimized_res = spo.minimize(optimize_cumulative_returns, initial_guess, args=(df1,), method='SLSQP', bounds=range, constraints=constraints, options={'disp': True})
 
 	#Calc Optimized Stats
+	normalized_df = normalize(df1)
+	optimized_allocations = allocated(normalized_df, optimized_res.x)
+	optimized_position_vals = position_vals(optimized_allocations, start_val)	
+	optimized_port_vals = portfolio_vals(optimized_position_vals)
 	opt_cum_ret = optimize_cumulative_returns(optimized_res.x, df1)
+
+	#Print Optimized Stats
+	#print "Normalized Prices:\n", normalized_df
+	#print "Optimized (Cumulative) Allocations:\n", optimized_allocations
+	#print "Optimized (Cumulative) Pos Vals:\n", optimized_position_vals
+	print "Optimized (Cumulative) Port Vals: \n", optimized_port_vals
 	print "OPTIMAL CUMUMLATIVE RETURNS BASED ON MINIMIZED CUMULATIVE RETURNS: ", opt_cum_ret * -1
         print "OPTIMAL ALLOCATIONS BASED ON MINIMIZED CUMULATIVE RETURNS: ", symbols, optimized_res.x
 
@@ -229,6 +239,9 @@ def optimize_sharpe_ratio(allocs, df):
 	sharpe = daily_ret - risk_free_rate
 	sharpe_numerator = sharpe.mean()
 	sharpe = sharpe_numerator / std_daily_ret
+	#print "TEST SHARPE: ", sharpe
+        sharpe = sharpe * (math.sqrt(252)) * -1
+	#print "TEST SHARPE: ", sharpe
 	# sharpe * -1 to get optimal value
 
 	return sharpe * -1
