@@ -93,19 +93,198 @@
 			* multiply by sqrt of k (constant representing frequency of sampling: 252 = daily, 12 = monthly, 1 = yearly)
 
 
+* What is an order?
+	* Components: the info that must go into a well formed order
+		* buy/sell:
+			* looking to buy or sell shares of stock  
+		* symbol:
+			* identifier for the stock or perhaps the ETF, that you want to buy or  sell
+		* # shares
+			* stocks and ETFs are sold in units of shares not by amount of money
+		* limit or market:
+			* market: you are willing to accept a good price but essentially whatever price the market is currently bearing
+			* limit: you don't want to do any worse than a certain price -- must specify limit
+		* price:
+			* if limit order: must specify what the corresponding limit is (price)
+			* if market order: you are not able to specify that price because with market order you are taking whatever price comes back
+		* ex:
+			* BUY, IBM, 100, LIMIT, 99.95 -- buy 100 shares of IBM at no more than $99.95 a share
+			* SELL, GOOG, 150, MARKET
+	* The Order Book:
+		* each exchange keeps an order book for every stock that they buy or sell 
+		* ex: 
+			* first order of day -- used as basis to start building their order book 
+				* BUY, IBM, 100, LIMIT, 99.95 -- buy 100 shares of IBM at no more than $99.95 a share
+					* BID 99.95 100 -- someone bid 99.95 for a 100 shares of stock -- this is public knowledge (bidder id is NOT public, but is known to exchange) 
+						* 100 gets larger depending on how many following orders come in
+							* so far nothing has been bought or sold because we don't yet have anyone willing to sell 
+			* first sell order of day
+				* SELL, IBM, 1000, LIMIT, 100 -- but there is nobody yet willing to buy at $100 therefore exchange adds this order to its order book 
+					* ASK 100.00 100
+			* order book has grown over course of the day...
+				* BID/ASK		PRICE			SIZE
+				* ASK			100.10			100
+				* ASK 			100.05			500
+				* ASK			100.00			1000
+				* BID			99.95			100
+				* BID			99.90			50		
+				* BID			99.85			50
+			* a market order comes in...
+				* BUY, IBM, 100, MARKET
+					* here's what happens...
+						* exchange looks at its order book, sees that there are shares for sale
+							* exchange has to give client LOWEST PRICE (100.00)
+			* order book has been updated after market order...
+				* BID/ASK		PRICE			SIZE
+				* ASK			100.10			100
+				* ASK 			100.05			500
+			-->	* ASK			100.00			900
+				* BID			99.95			100
+				* BID			99.90			50		
+				* BID			99.85			50
+			* The remaining stock price will probably go DOWN -- due to amount of stock for sale vs stock bids (i.e., more selling pressure)
+				* if a market order to sell 500 shares came in, the price would immediately go down
+				* if a market order to buy 500 shares came in, the price would remain the same
+
+			* limit order comes in...
+				* BUY, IBM, 100, LIMIT, 100.02
+			* order book has been updated after market order...
+				* BID/ASK		PRICE			SIZE
+				* ASK			100.10			100
+				* ASK 			100.05			500
+			-->	* ASK			100.00			800	-- less than the limit price of 100.02
+				* BID			99.95			100
+				* BID			99.90			50		
+				* BID			99.85			50
+
+			* sell order comes in...
+				* SELL, 175, MARKET
+			* order book has been updated after market order...
+				* BID/ASK		PRICE			SIZE
+				* ASK			100.10			100
+				* ASK 			100.05			500
+				* ASK			100.00			800	
+			-->	* BID			99.95			0	-- 100 shares at 99.95
+				* BID			99.90			0	-- 50 at 99.90		
+				* BID			99.85			25	-- 25 at 99.85
+	
+			* as times has gone on the executed prices have been decreasing -- as consequence of increased sell pressure
+
+	* How orders get to the exchange from a person:
+		1. buy order goes over internet to broker
+		2. broker in turn is connected to several exchanges -- broker determines where to route your order based on information the broker knows about the exchanges 
+			* NYSE			NASDAQ			BATS
+			* order book		order book		order book 
+			* broker has a computer located at each exchange, the broker queries the computer to look into the order book of each exchange for price information
+			* broker routes your order based on exchange with best price 
+		3. your order enters the exchange, gets executed
+		4. the price comes back to your broker 
+		5. price is forwarded back to you -- you recieve a confirmation
+		* Brokerage -- internal transcactions:
+			* if a brokerage has 2 clients (buy and sell) they can bypass the exchanges and make the transction internally
+				* exchanges not involved
+					* broker does not have to pay fees to the exchanges for the transaction
+				* BY LAW -- BOTH BUYER AND SELLER MUST GET PRICES THAT ARE AT LEAST AS GOOD AS THEY WOULD HAVE GOTTEN HAD THEY GONE THROUGH AN EXCHANGE
+					 -- TRANSACTION STILL MUST BE REGISTERED AT 1 OF THE EXCHANGES -- USUALLY RECORDED AT THE EXCHANGE WHERE THAT PARTICULAR STOCK IS HONED
+		* Brokerage to brokerage transaction
+			* requires a Dark Pool which acts as an intermediary between exchanges 
+				* Dark Pool looks at the order books from the various exchanges and they are often making predications about which direction stocks are going to go
+				* Dark Pools pay the brokers for privilege to look at the orders before they go to the exchanges -- and if the Dark Pools see an advantages trade they will go ahead and take it
+				* route transactions -- avoid exchanges
+
+	* How Hedge Funds exploit market mechanics:
+		* distance between person and their broker and broker to an exchange results in increased time
+		* hedge funds have co located computers at exchanges and so their proximity results in decreased time
+		A. Order book exploit -- take advantage of proximity and resultant speed between remote buyers/sellers and exchanges
+			1. Hedge fund observes order book (with decreased time) 
+				* based on what it sees at the order book, it makes a predicition about price direction -- for example prices are going to go up
+			2. Hedge fund buys stock
+			3. you click "buy" stock -- requiring time for your order to make its way to the exchange
+			4. meanwhile the price does go up
+			5. your order finally is executed at the exchange -- in fact the hedge fund sells you the stock
+				* Over the course of a few milliseconds, the hedge fund bought stocks, watched the price increase and sold the stocks
+				* hedge fund exploits remote buyers/sellers because it can act much "earlier" than those remote buyers/sellers
+		B. Geographic Arbitrage -- takes advantage of proximity and resultant speed between exchanges
+			* NYSE			LONDON
+			* lower price		higher price
+			* HF colocated server	HF colocated server
+			* buys low 		* sells high 
+			
+
+	* Additional order types:
+		* exchanges
+			* buy/sell
+			* limit/market
+		* broker:
+			* buy/sell
+			* limit/market
+			* stop loss 
+				* conditions: when stock drops to certain price, sell it 
+			* stop gain
+				* conditions: when stock reaches a certain price, sell it
+			* trailing stop
+				* automatically changing value for when a criteria is met
+					* ex : 10 cents behind the price, when value goes up, trailing stop price goes up, but if price drops 10 below price a stop loss is triggered
+			* selling short  -- MOST IMPORTANT AND IMPACTFUL type of order
+				* take a negative position on a stock; i.e., sell a stock short if you believe its price is going to go down 
+					* selling stock we don't even own! how?? -- broker facilitation!
+		* mechanics of short selling: ENTRY
+			* IMB selling at $100
+			* you: take a short position on IBM -- want to sell IBM short (don't own any shares)
+			* Joe: holds 100 shares IBM -- wants to keep then BUT is willing to lend you shares
+			* Lisa: wants to buy IBM
+			1. you borrow 100 shares from Joe
+			2. you sell those 100 shares to Lisa
+			3. in exchange, List gives you $100 per share ($10,000)
+			4. you have made 10000 and you now owe Joe 100 IBM shares
+		* mechanics of short selling: EXIT
+			1. when/if price drops to your specified price, you inform broker to exit (buy to close position -- buy 100 shares) 
+				* IBM drops to $90 -- your exit price
+					* 90 * 1000 = 9000 -- 10000 - 9000 = 1000 in returns
+					* or 100 shares at 100 each share drops to 90, a decrease of 10 -- so 10 * 100 = 1000
+			2. you buy a 100 shares and give them back to Joe
+			3. you have $1000 and no remaining obligation
+		* what can go wrong?
+			* IBM prices could go up!	-- you lose money
+
+
+* what is a company worth?
+	* why company value matters:
+		* buy below "true" value, sell above "true" value
+		* true value: 
+			* intrinsic value: based on the value of a company as estimated by future dividends; i.e., companies pay each year or quarter a dividend (cash payment) to share holders -- 
+			if i own a share of stock, how much money will i get over the future and what's it worth over all the future going forward
+			* book value: based on assets a comany owns -- what does the value of the sum of the assets say the company is worth
+			* market cap: based on value of the stock on the market and how many shares are outstanding -- what does the market think the company is worth
+
+		* the value of a future dollar:
+			* worth less than a dollar right now -- you can spend it now
+			* present value = future value / (1 + interest rate)^i	-- i = how far into the future this payment is going to be delivered -- if delivered right now -- i = 0, if in a year i = 1
+			* ex: US gov't IR = 1% -- 1 dollar in the future
+				present value = $1.00 / (1 + .01)^1 = 0.99
+				i.e., the value of a future dollar from the US gov't is worth .99 -- gov't can charge .99 for 1.00 in a year -- the present value of a dollar in the future (1 year) is .99
+				if IR = 5%
+				present value = $1.00 / (1 + .05)^1 = 0.95
+				i.e., the gov't can only charge you .95 for 1.00 in a year -- the present value of a dollar in the future (1 year) is .95
+			* Applied to intrinsic value (dividends):
+				* Interest rate analogous to: how risky the company is -- called the discount rate when applied to intrinsic value of a company (dividend payouts)
+				* discount rate:
+					* higher if the company is more risky	; lower if the company is less risky
+				* intrinsic value = value of all future dividends that it will pay out
+					* summation:
+						infinity
+						    E	FV/n^i				---> 	= FV/(n-1) = FV/Discount Rate
+						  i = 1
+					* i = 1 year to inifinity years	
+					* sum of future value / n^i	-- n = (1 + IR)
+			
 
 
 
 
-
-
-
-
-
-
-
-
-
+		* intrinsic value:
+			* 
+	
 
 
 

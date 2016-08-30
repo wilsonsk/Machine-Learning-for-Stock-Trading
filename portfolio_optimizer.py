@@ -240,7 +240,7 @@ def optimize_sharpe_ratio(allocs, df):
 	sharpe_numerator = sharpe.mean()
 	sharpe = sharpe_numerator / std_daily_ret
 	#print "TEST SHARPE: ", sharpe
-        sharpe = sharpe * (math.sqrt(252)) * -1
+        sharpe = sharpe * (math.sqrt(252))
 	#print "TEST SHARPE: ", sharpe
 	# sharpe * -1 to get optimal value
 
