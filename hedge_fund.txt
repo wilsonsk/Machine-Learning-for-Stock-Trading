@@ -255,43 +255,137 @@
 			* intrinsic value: based on the value of a company as estimated by future dividends; i.e., companies pay each year or quarter a dividend (cash payment) to share holders -- 
 			if i own a share of stock, how much money will i get over the future and what's it worth over all the future going forward
 			* book value: based on assets a comany owns -- what does the value of the sum of the assets say the company is worth
-			* market cap: based on value of the stock on the market and how many shares are outstanding -- what does the market think the company is worth
+			* market capitalization: based on value of the stock on the market and how many shares are outstanding -- what does the market think the company is worth
 
-		* the value of a future dollar:
-			* worth less than a dollar right now -- you can spend it now
-			* present value = future value / (1 + interest rate)^i	-- i = how far into the future this payment is going to be delivered -- if delivered right now -- i = 0, if in a year i = 1
-			* ex: US gov't IR = 1% -- 1 dollar in the future
-				present value = $1.00 / (1 + .01)^1 = 0.99
-				i.e., the value of a future dollar from the US gov't is worth .99 -- gov't can charge .99 for 1.00 in a year -- the present value of a dollar in the future (1 year) is .99
-				if IR = 5%
-				present value = $1.00 / (1 + .05)^1 = 0.95
-				i.e., the gov't can only charge you .95 for 1.00 in a year -- the present value of a dollar in the future (1 year) is .95
-			* Applied to intrinsic value (dividends):
-				* Interest rate analogous to: how risky the company is -- called the discount rate when applied to intrinsic value of a company (dividend payouts)
-				* discount rate:
-					* higher if the company is more risky	; lower if the company is less risky
-				* intrinsic value = value of all future dividends that it will pay out
-					* summation:
-						infinity
-						    E	FV/n^i				---> 	= FV/(n-1) = FV/Discount Rate
-						  i = 1
-					* i = 1 year to inifinity years	
-					* sum of future value / n^i	-- n = (1 + IR)
+			* Intrinsic Value: the value of a future dollar:
+				* worth less than a dollar right now -- you can spend it now
+				* present value = future value / (1 + interest rate)^i	-- i = how far into the future this payment is going to be delivered -- if delivered right now -- i = 0, if in a year i = 1
+				* ex: US gov't IR = 1% -- 1 dollar in the future
+					present value = $1.00 / (1 + .01)^1 = 0.99
+					i.e., the value of a future dollar from the US gov't is worth .99 -- gov't can charge .99 for 1.00 in a year -- the present value of a dollar in the future (1 year) is .99
+					if IR = 5%
+					present value = $1.00 / (1 + .05)^1 = 0.95
+					i.e., the gov't can only charge you .95 for 1.00 in a year -- the present value of a dollar in the future (1 year) is .95
+				* Applied to intrinsic value (dividends):
+					* Interest rate analogous to: how risky the company is -- called the discount rate when applied to intrinsic value of a company (dividend payouts)
+					* discount rate:
+						* higher if the company is more risky	; lower if the company is less risky
+					* intrinsic value = value of all future dividends that it will pay out
+						* summation:
+							infinity
+							    E	FV/n^i				---> 	= FV/(n-1) = FV/Discount Rate
+							  i = 1
+						* i = 1 year to inifinity years	
+						* sum of future value / n^i	-- n = (1 + IR)
 			
+			* Book Value:
+				* book value = total assets minus intangible assets (things difficult to put price on, brand or patent, etc.) and liabilities (loans owed, etc.) 
+				* ex.
+					* 4 factories - $10 mil each	-- $40 mil
+					* 3 patents - $5 mil each	-- $15 mil
+					* 1 loan - $10 mil each		-- $10 mil
+					* book value 			=  $30 mil -- the 3 patents are assets (so 55 mil total assets) we then subtract the $15 mil from total assets and minus liabilities
+			
+			* Market Capitalization: let the market decide value
+				* market cap = # shares outstanding * price
+				* price at which you can buy the entire company
 
+	* why information affects stock price:
+		* stock price is main mechanism by which investors can essentially let their view of the stock be known - if they think company is valued less they will sell and price will go down, etc. 
+		* it is based on intrinsic value, book value and market cap
+		* ex. : all companies exist on same island, with multiple other islands in proximity that contain other companies
+			* information that a CEO "is ill"
+				* intrinsic value:
+					* should affect stock price downward -- because the probability that shareholders will continue to receive dividends in future is decreasing or amount of 
+					dividends will decrease
+			* information that "island soil is bad"
+				* intrinsic value: -- reduces the expectation of future dividends
+					* sector news -- affects the first company and all companies on the island that depend in any way on the soil or actions of the soil company
+			* information that the "sea level is rising"
+				* intrinsic value: -- reduces the expectation of future dividends
+					* market wide news -- will affect all the islands 
 
+	* compute company value: would you buy this stock
+		* note: company value and stock are not necessarily the same
+		1. book value:
+			* 10 airplanes at $10 mil each
+			* brand name at $10 mil 
+			* $20 mil loan liability
+		
+			* total assets = $100 mil + $10 mil = $110 mil
+				* intangible assets = $10 mil + $20 mil = $30 mil
+					* book value = $110 mil - $30 mil = $80 mil
 
+		2. intrinsic value:
+			* $1 mil dividends per year (5% discount rate) 
+		
+			* intrinsic value = $1 mil / 5% = $20,000,000
 
-		* intrinsic value:
-			* 
-	
+		3. market cap:
+			* 1 mil outstanding shares
+			* $75 per share 
+			
+			* market cap = 1 mil * $75 = $75,000,000
 
+		* Should you buy this stock?
+			* would you buy this whole company for $75,000,000?
+				* YES!
+					* THEN sell all individual assets for $80,000,000
+						* net return = $5,000,000
+							* this is why stocks very, very rarely go below their book value -- a predatory buyer will buy entire company and sell off its pieces
+		* many stock trading strategies look for deviations between the 3 valuations (book, market cap, intrinsic val) 
+			* ex: if intrinsic value drops significantly and stock price is high -- might be worthwhile to short sell the stock
+			* ex: if dividends are going up and market cap is low -- might be worthwhile to buy stock
+			* book value provides lowest price
+				* when stock price begins to approach book value, you can pretty much assume that the price is not going to go below book value or much below due to preventing predatory buyers
 
+* The Capital Asset Pricing Model (CAPM) - developed by researchers in 1960's
+	* explains how market impacts individual stock prices and provides mathematical framework for hedge fund investing 
+		
+	* Portfolio: a weighted set of assets
+		* weight is percent of hedge fund allocated to a given asset
+			* each asset is weighted -- wi (aka w sub i) = portion of funds in asset i
+			* E abs(wi) = 1.0 	(summation) -- sum of all asset weights is equal to 1 (100%) 
+			  i
+				* abs because some weights can be negative if they are short sells of stock
 
+			* returns on portfolio (rp(t)) = E ((wi)(ri)(t)) 	--->	return for portfolio on given day (t) = sum of (weight for each asset in portfolio * return for that day of the asset)
+							 i
+				* (t) == given day
 
+			* ex:
+				* on (t) -> stockA +1%
+				* on (t) -> stockB -2%
+				* w1 = 75%
+				* w2 = -25%	--> negative position (i.e., short sell)
+				
+				* return (t) = (.75 * 1) + (-.25 * -2) == .75 + .5 = 1.25%
+	* market portfolio:
+		* market: index that broadly covers a large set of stocks -- in US: SP500 ; in UK: FTA ; in Japan: TOPIX
+			* indexes composed of many individual stocks
+			* market portfolio: a combination of those stocks in a certain weighting
+			* cap weighted: most of the important indexes are cap weighted
+				* the individual weight of each stock in the portfolio is set according to that stock's market cap (#outstanding shares * stock price) divided by the market cap of the index
+					* w(i) = market cap(i) / E market cap(j)	-> market cap(i) = market cap of an individual stock -- E market cap (j) == Summation of market cap of all stocks 
+								 j
+								
+			* indexes == oceans	-- SP500, FTA, TOPIX, etc.
+				* sectors == islands	-- Energy, Technology, Manufactoring, Finance, etc.
 
-
-
-
-
-
+	* CAPM equation:
+		* (ri(t)) = (Bi)((rm)(t)) + (Ai(t))    --> return for an individual stock on given day (t) = beta of indv. stock * (return on market on given day (t)) + alpha of that ind. stock on that given day
+			    |-----------|   |-----|
+				market	    residual		
+		* Beta -- what the CAPM is asserting is that the significant portion of the return for a particular stock is due to the market; i.e., the market moving up or down strongly affects the change 
+		in price on every individual stock
+			* the extent to which the market affects a particular stock is encapsulated in the beta portion
+				* every stock has its individual beta which specifies how much its affected -- many stocks have a beta near 1 -- means if market goes up 1% we would expect all else being equal
+				that the stock would go up 1% -- if beta = 2 and market goes up 2% we expect all else being equal that the stock would go up 2%
+		* Alpha -- called the residual; if you calc how much stock should have gone up or down according to beta, there will be something left over, it wont exactly match what beta predicted
+			* CAPM says (an important aspect of CAPM) that the expectation for alpha is 0 -- random variable with expected value of 0
+		* Beta and Alpha are obtained from daily returns -- particularly how daily returns for a particular stock relate to the daily returns of the market
+			* Beta is essentially the slope of a line that runs through a scatter plot between the daily returns of a particular stock and a market
+			* Alpha is the y-intercept of that line 
+		* this is an after the fact calculation -- just because historically a particular stock looking back in time gave you a particular alpha you shouldn't necessarily expect that in the future
+			* CAPM says you should expect this alpha to be 0, but in reality though its not always 0
+			
