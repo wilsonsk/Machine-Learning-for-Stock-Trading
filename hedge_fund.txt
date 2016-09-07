@@ -389,3 +389,151 @@
 		* this is an after the fact calculation -- just because historically a particular stock looking back in time gave you a particular alpha you shouldn't necessarily expect that in the future
 			* CAPM says you should expect this alpha to be 0, but in reality though its not always 0
 			
+		* CAPM vs. Active management (passive investing vs. active investing):
+			* this argument did not really exist until after CAPM came out 
+			* passive: buy index portfolio and hold (sit on it and let grow)
+			* active: buy individual stocks -- when compared to an index there are overweight (higher weights) and underweight (lower weights) for certain stocks
+			* the difference is that an active investor selects different weights for certain stocks
+			* (ri(t)) = (Bi)((rm)(t)) + (Ai(t))   
+			    	    |-----------|   |-----|
+					market	    residual		
+				* both active and passive managers agree on the market component; i.e., how the stock moves each day is most signficantly influenced by the market (rm), 
+				the amount that it moves is strongly related to beta (Bi) 
+				* they disagree on alpha
+					* CAPM says alpha is RANDOM and the expected value is 0 (on average)
+					* active investors say they can PREDICT alpha; i.e., they believe they can predict whether an individual stock will go up or down relative to the market
+						* active managers say they can use info (and perhaps machine learning) to find stocks that have positive or negative alpha and use that info to select stock picks
+		* CAPM for portfolios:
+			* (ri(t)) = (Bi)((rm)(t)) + (Ai(t))  -- return for individual stock 
+			* (ri(t)) = E weightOfIndvStocki * ((Bi)((rm)(t)) + (Ai(t)))  -- return for entire portfolio -- sum of each weight of each individual stock times its beta + alpha
+				    i
+
+			* beta for entire portfolio (Bp) = E wi * Bi
+							   i 
+			* revised CAPM = (rp(t)) = (Bp)(rm(t)) + (Ap(t))	-- CAPM believes alpha to be on average 0
+			* revised CAPM = (rp(t)) = (Bp)(rm(t)) + E weightOfIndvStocki * (Ai(t))	-- Active managers believe that alpha can be predicted and give more info
+			
+		* implications of CAPM
+			* upward markets -- want larger Beta of portfolio
+				* because that means we will go up even more than the market if Beta is greater than 1
+			* downward markets -- want smaller Beta of portfolio 
+				* because that means we will go down less than the market 
+			* revised CAPM = (rp(t)) = (Bp)(rm(t)) + (Ap(t))	-- CAPM believes alpha to be on average 0
+				* expected value of alpha = 0
+					* therefore, the only way to beat the market is to choose Beta				
+						* we choose high Beta in up markets
+						* we choose low Beta in down markets
+					* PROBLEM: 
+						* Efficient Markets Hypothesis (EMH) -- you can't predict the market so choosing a high or low beta is not an option
+						* CAPM says "YOU CAN'T BEAT THE MARKET"
+		* Arbitrage Pricing Theory (APT):
+			* developed by Stephen Ross 1976
+			* CAPM: 	 
+				* revised CAPM = (rp(t)) = (Bp)(rm(t)) + (Ap(t))	-- CAPM believes alpha to be on average 0
+				* we have this single Beta that represents a single stocks relationship to the market -- maybe we should have multiple Betas!
+					* CAPM is really only allowing us to consider a stock in the entire ocean
+						* we ought to consider the other islands		
+							* i.e., a particular stock might have exposure to different aspects of the market
+								* ex:
+									* the stock might have some exposure to finance -- Bif * rf		
+									* the stock might have some exposure to tech -- Bif*rf + Bit * rt		
+									* the stock might have some exposure to manufactoring --  Bif*rf + Bit * rt + Bimfg * rmfg ... + Ai		
+							* we could compute for each stock, for each sector an individual Beta
+								* by breaking out the Betas into these different factors we can get a more accurate forecast of what the returns going to look like 
+
+	* How Hedge Funds use the CAPM:
+		* Typical hedge fund develops methods to find stocks they think will perform better 
+			* the informational edge they're seeking is usually market relative meaning they are looking for stocks that are going to go up more than the market or go down less than the market
+			* if this information is reliable they can take advantage of the CAPM to virtually guarantee positive returns
+		* 2 stock scenario: long. short portfolio -- there are certain advantages to this long/short approach
+			* (ri(t)) = (Bi)((rm)(t)) + (Ai(t))	--> return for an individual stock on given day (t) = beta of indv. stock * (return on market on given day (t)) + alpha of that ind. stock on 
+								that given day
+			* using machine learning, other methods, etc. they have obtained the following information
+				* stockA: predict +1% (alpha = 1%) over market for next 10 days; looked backwards at stockA with regard to market BetaA = 1.0 	-- long sell
+				* stockB: predict -1% (alpha = -1%) below market for next 10 days; looked backwards at stockB with regard to market BetaB = 2.0 	-- short sell
+					* if market stays flat (i.e., returns 0%) for next 10 days, $50 long position in stockA, -$50 short position stockB
+						* if predictions are perfect -- stockB should go down 1% below market, stockA should go up 1% above market
+							* ra = Ba* rm + Aa -- return on stockA -- Beta of A = 1.0 * return on market (0%) = 0 + Alpha of A = 1% -- 1% * 50 = $0.50
+							* rb = Bb* rm + Ab -- return on stockB -- Beta of B = 2.0 * return on market (0%) = 0 + Alpha of B = -1% -- -1% * -50 = $0.50
+					* if market stays goes up 10% for next 10 days, $50 long position in stockA, -$50 short position stockB
+						* if predictions are perfect -- stockB should go down 1% below market, stockA should go up 1% above market
+							* ra = Ba* rm + Aa -- return on stockA -- Beta of A = 1.0 * return on market (10%) = 10 + Alpha of A = 1% -- 11% * 50 = $5.50
+							* rb = Bb* rm + Ab -- return on stockB -- Beta of B = 2.0 * return on market (10%) = 20 + Alpha of B = -1% -- 19% * -50 = -$9.50
+							* total $ = $5.50 + -$9.50 = -$4.00
+	 						* total % = 11 * .5 (of our allocation) = 5.5 + -19 * .5 (of our allocation) = -9.5 = -4%
+					* if market stays goes down 10% for next 10 days, $50 long position in stockA, -$50 short position stockB
+						* if predictions are perfect -- stockB should go down 1% below market, stockA should go up 1% above market
+							* ra = Ba* rm + Aa -- return on stockA -- Beta of A = 1.0 * return on market (-10%) = -10 + Alpha of A = 1% -- -9% * 50 = -$4.50
+							* rb = Bb* rm + Ab -- return on stockB -- Beta of B = 2.0 * return on market (-10%) = -20 + Alpha of B = -1% -- -21% * -50 = $10.50
+							* total $ = -$4.50 + $10.50 = $6.00
+	 						* total % = -9 * .5 (of our allocation) = 4.5 + -21 * .5 (of our allocation) = -10.5 = 6%
+			* even if we have perfect predicted alpha and perfect predicted beta -- we can still lose!
+				* how do we fix this?? -- CAPM!
+	
+		* 2 stock scenario using CAPM math
+			* rp = E wi * (Bi * rm + Ai)
+			       i
+			* rp = (Wa*Ba + wb * Bb) * rm + wa*Aa + wb * Ab
+				* wa = .5 ; wb = -.5 ; Aa = 1% ; Ab = -1% ; Ba = 1.0 ; Bb = 2.0
+				
+				* rp = (.5*1.0 + -.5*2.0) * rm ...	-- THIS IS BETA FOR THE PORTFOLIO (SEE BEGINNING OF THIS SECTION) 
+					* rp = -.5 * rm + .5 * 1.0 + -.5 * -1
+						* rp = -.5 * rm + 1%
+							* so if rm = 10%	-- -.5*10%+1% = -4% return on portfolio
+				* ALPHA is derived from some information that allowed us to predict	-- have control
+				* return on market (rm) cannot not be derived from information 		-- have no control
+					* is there some way we can remove all else but alpha?
+						* i.e., can we make Beta for portfolio = 0?
+							* i.e., can we find weights for stockA and stockB so that their sum = 0	(stockA allocations and stockB allocations and Beta's that equal 0)
+								* i.e., can we remove/minimize market risk
+				* ex: find allocations/weights that remove/minimize market risk (i.e., make Beta * rm = 0)
+					* wa = .5 ; wb = -.5 ; Aa = 1% ; Ab = -1% ; Ba = 1.0 ; Bb = 2.0
+						* we know that stockA is being long'd (+ allocation) and stockB is being short'd (- allocation)
+							* Bp = wa * 1 + wb * 2 = 0 -> in order to equal 0, wa is the complement of wb
+							* wa = -2 * wb
+						* we also know that the sum of the absolute values of stockA and stockB should be equal to 1
+							* abs(wa) + abs(wb) = 1
+								* abs(-2wb) + abs(wb) = 1
+									* 3abs(wb) = 1
+										* abs(wb) = 1/3
+											* wb = -1/3	-- we know weight/allocation of stockB must be negative (short sell) 
+											* wa = -2 * -1/3 = 2/3
+					* wa = .66 ; wb = -.33 
+				* ex: 
+					* wa = .66 ; wb = -.33 ; rm = 10% 
+						* rp = wa * Ba * rm + wa * Aa + wb * Bb * rm + wb * Ab
+							* rp = (.66 * 1.0 * rm + -.33 * 2.0 * rm) 
+								* rp =  0 + .66 * 1.0 + -.33 * -1.0 
+									* rp = .66 + .33 = 1% which ever way the market goes
+					* NOTE: the Betas are not guaranteed to continue into the future neither are the Alphas -- just computed based on the info we obtained
+						* not guaranteed but is a way to use long/short investing to reduce exposure to the market overall and to focus on the Alpha components we
+						can control via information
+		* summary
+			* assuming we have some sort of actionable information -> forecast alpha of individual stock 
+			* CAPM enables:
+				* minimized market risk where the Beta of the portfolio = 0
+					* via finding weight/allocation of individual stocks
+			* CAPM can be a really valuable tool in terms of portfolio construction because it can enable you to build portfolios that are less exposed to market risk
+				* long/short trading refined by CAPM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
