@@ -517,6 +517,111 @@
 				* long/short trading refined by CAPM
 
 
+* Technical Analysis vs. Fundamental Analysis	-- 2 broad categories of approaches to use for choosing stocks to buy or sell
+	* fundamental analysis:
+		* involves looking at aspects of a company in order to estimate its value 
+		* typically look for situations where the price of a company is below its value
+	* technical analysis:
+		* don't care about value of a company
+		* focus on patterns or trends in a stock's price
+
+	* characteristics of technical analysis:
+		* what is it?
+			* ONLY looks at price and volume	-- as opposed to fundamental analysis which looks at fundamental factors such as earnings, dividends, cash flow, book value, etc.
+			* compute statistics called indicators by looking back in time at historical price and volume
+			* indicators are heuristics that may hint at a buy or sell opportunity	-- 
+		* criticisms:
+			* not an appropriate method for investing because it is not taking into account the value of a company 
+				* solution: instead think about technical analysis as a TRADING approach rather than an investing approach!
+		* why it might work?
+			* there is information in the price and price change -- reflects sentiments of buyers and sellers especially if we see a price for a particular stock is moving in a different
+			direction than the overall market
+			* heuristics work!
+	* example: fundamental or technical?
+		* moving average of price	-- technical
+		* % change in volume		-- technical
+		* price/earnings ratio		-- fundamental	-- using price AND earnings
+		* intrinsic value		-- fundamental
+	* when is technical analyisis effective?
+		* rules of thumb:
+			* individual (by themselves) indicators are weakly predictive
+				* the more people that use a particular approach the less value that is realized by any 1 individual by themselves
+			* combinations of multiple indicators are stronger predictors (provide value) 
+			* look for contrasts (stock vs market)	
+				* look for 1 stock that has a strongly different indicator than another stock
+				* look for 1 stock that is behaving differently than the market as a whole 
+			* technical analysis works better over shorter time periods
+	* when does technical analysis have value?
+		* trading horizon: time period between buying and selling a particular stock
+			ms		--->		days		--->			years
+			
+		* fundamental: how much do fundamental factors contribute to the change in price over time
+			* in short term -- very little value
+			* long term 	-- lots of value
+		* technical: how much do technincal factors contribute to the change in price over time
+			* short term	-- very valuable
+			* long term	-- not so valuable
+		* consider...
+			* decision speed:
+				* how fast do the decisions need to be made if...
+					* you are going to be trading at the ms level		-- very fast
+					* you are going to be trading at the years level 	-- not so fast
+			* decision complexity:
+				* how complex is the decision to buy or sell a stock if...
+					* you are going to hold the stock for years?		-- very complex
+					* you are going to hold the stock for ms?		-- not very complex
+			* computers excel or are in the beginning of the trading horizon	-- fast decisions and non complex decisions
+				* this also happens to be where technical analysis has value 	-- within this domain of the computer
+			* humans excel at the end of the trading horizon			-- slow decisions and complex decisisons
+	
+	* A few good technical indicators: some of the most common and most popular
+		* momentum: price[t] / price[t-n] - 1	n = days of momentum
+			* over a given number of days, how much has the price changed
+			* positive or negative depending on overall change
+			* strength = steepness of the momentum line/slope
+		* simple moving average (SMA): (price[t] / price[t-n:t].mean()) - 1
+			* indexed by n-days (how many days we are looking back: n-day window)
+			* smoothed value of price chart
+			* lags movement
+			* at least 2 different ways technicians use SMA as parts of trading strategies
+				1. look for places where current price crosses through the SMA -- important events especially if the average is over many n-days			
+					* if you combine this momentum: i.e., price has strong momentum and is crossing the SMA
+						* that can be a signal
+				2. as a proxy for underlying value: i.e., if you look back over certain period of time and take that average price, that might represent the true value of the company
+					* if we see a large excursion from that price, we should expect that that price is going to come back down or up to that average
+						* signals an arbitrage opportunity -- buy or sell
+		* Bollinger Bands: bb[t] = price[t] - SMA[t] / 2 * std[t]
+			* for low volatility stocks (stocks that are currently experiencing low volatility):
+				* should use a smaller % (number) of price excursion from SMA before it triggers a signal
+			* for high volatility stocks (stocks that are currently experiencing high volatility):
+				* should use a larger % (number) of price excursion from SMA before it triggers a signal
+			* this is accomplished by using standard deviation	-- 2 standard deviations of prices (within n-day window) from SMA (of that n-day window)
+			* how to use:
+				* look for points where price crosses the Bollinger Bands from outside to inside
+					* this indicates a large excursion from SMA and we are expecting that it will retreat back to the SMA
+						* demonstrate a retreat because it has gone from outside the band back towards the SMA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
