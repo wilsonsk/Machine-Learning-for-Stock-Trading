@@ -529,7 +529,8 @@
 		* what is it?
 			* ONLY looks at price and volume	-- as opposed to fundamental analysis which looks at fundamental factors such as earnings, dividends, cash flow, book value, etc.
 			* compute statistics called indicators by looking back in time at historical price and volume
-			* indicators are heuristics that may hint at a buy or sell opportunity	-- 
+			* indicators are heuristics that may hint at a buy or sell opportunity	-- represents someone's interpretation or hunch of how a statistical approach to previous prices and volumes
+			might suggest future price movement
 		* criticisms:
 			* not an appropriate method for investing because it is not taking into account the value of a company 
 				* solution: instead think about technical analysis as a TRADING approach rather than an investing approach!
@@ -600,13 +601,141 @@
 				* look for points where price crosses the Bollinger Bands from outside to inside
 					* this indicates a large excursion from SMA and we are expecting that it will retreat back to the SMA
 						* demonstrate a retreat because it has gone from outside the band back towards the SMA
+		
+		* Normalization:
+			* SMA		--	-.5 to +.5	
+			* momentum	--	-.5 to +.5
+			* BB		--	-1.0 to +1.0
+			* if we were to plug these values into some sort of machine learner we would have a problem
+				* BB factor would tend to overwhelm these other factors and become the most important factor
+			* SOLUTION	-- normalization
+				* normalization: 
+					* takes each of these factors and stretches or compresses so that the value ranges vary from -1 to +1
+				* normed vals = values - mean / values.mean()
 
+* Dealing with data:
+	* How data is aggregated:
+		* i.e., many many trades happening on different exchanges -- how is that data combined and how is reported so that it can be used
+		* tick 
+			* the finest resolution of data is called a TICK
+			* represents a successful buy/sell match or a successful transaction		
+				* each transaction happens at no specific time -- happens only when buy and sell are matched -- no guarantee that there's going to be a trade at any particular point in time
+					* trades happen when they happen
+		* each exchange provides its own data feed regarding these transactions 
+			* so you can subscribe to these feeds and see at each tick when a transaction happens on any particular exchange 
+			* for highly liquid stocks there may be hundreds, thousands, hundreds of thousands of these transactions every second	-- so collecting and using all these ticks for all these
+			exchanges over a long period of time results in a lots of data -- becomes very complex
+			* tick data is usually consalidated into minute by minute or hour by hour chunks 
+				* data collected within each chunk and represent it as:
+					* open: first transaction within the time period (chunk)
+					* high: highest price within entire time period (chunk)
+					* low: lowest price within entire time period (chunk)
+					* close: last transaction within the time period (chunk)
+					* volume: total volume within the time period (chunk)
 
+		* price anomaly:
+			* dramatic price drops and rises over time period chunk
+			* why?
+				* stock splits:
+					* an issue of new shares in a company to existing shareholders in proportion to their current holdings
+						* ex: take 1 share at $300 and split into 4 shares at $75 -- 4:1 split
+					* why do stocks split?
+						* price is too high
+						* why is high price a problem?
+							* options are usually traded in blocks of 100 shares -- this makes stocks expensive and less liquid
+							* even buying 1 share of an expensive stock is a problem
+							* if you are building a portfolio and want to have a finely tuned proportion of each stock, if some of the stock prices are very high
+							it becomes difficult to get a fine resolution  
+					* problems:
+						* when analyzing data and look for trading signals/opportunities
+							* at stock splits the algorithm might mistake them for short sell opportunities instead of understanding the stock split occurance
+					* solution:
+						* if you want to trade using this actual close data - must account for the stock splits and that can be cumbersome
+							* adjusted close aka adjusted prices!
+								* create a timeline of prices that are adjusted to account for these changes such that you can look back over adjusted close,
+								simulate buying at a particular time and seeing how the value increases over time accurately without having to account for stock splits
+						* how it works		 			
+							* the very last day, adjusted close and actual close are always the same
+							* track back in time until a stock split 
+								* go back over all historical data and divide by the split ratio
+							* track back in time until a stock split
+								* go back over all historical data and divide by the split ratio
+							* ... 
+		* dividends	
+			* can have significant effect on what happens to the actual price of a stock
+				* if stock is trading at $100 and they announce "on this datein the future we are going to pay a $1 dividend"
+					* what will happen to the price of this stock between now and date of the dividend?
+						* i.e., what will price be day before dividend and what will price be the day the dividend is paid?
+							* price day before = rise to $101	-- get 1 share of stock and a dollar the next day
+							* price day of dividend = drop to $100	-- everyone that held a share this day got 1 share of stock and 1 dollar
+			* adjusting for dividends
+				* just before dividend is paid, we adjust all the prices down by the proportion of the dividend
+		* adjusted close
+			* always same as closing price
+			* adjusted for both dividends and splits
+			* changes based on date on which data was accumulated
+				* adjusted close prices usually lower with newer data to account for stock splits and dividend payouts that occur in the future since the old data was collected
+		* survivor bias
+			* logical error of concentrating on the people or things that "survived" some process and inadvertently overlooking those that did not because of their lack of visibility
+			* this in the context of stocks existing in a particular market "as of today" and not accounting for stocks that existed within the a given time window but no longer exist
+			in the current market
 
+* Efficient Markets Hypothesis:
+	* ASSUMPTIONS: we have been operating under implicit assumptions
+		* technical analysis assumption: there is information in historical price and volume data that we can discover and exploit in advance of the market
+		* fundamental analysis assumption: there is information in fundamental data (like earnings) that can be exploited and traded upon in advance of the market
+		* The Efficient Markets Hypothesis says both assumptions are wrong!
+	* EMH assumptions:
+		* large number of investors interacting in the market for profit
+			* most important assumption
+			* have an incentive to find opportunities where the price of a stock is out of line with what its true value is
+			* because there are so many of these investors operating simultaneously anytime a little bit of information comes out there, the price is going to move
+		* new information arrives randomly
+			* arrives at random times, rates for different stocks, but its constantly arriving and investors are paying attention to that information
+			* therefore... (see next assumption)
+		* prices adjust quickly
+		* current price reflect all available information
+			* i.e., all this information that is trickling in is acted upon by the large number of investors, the price adjusts quickly to that information and the current price reflects 
+			all information about that stock
+	* origins of information
+		* where does the information come from? (from most public to least public)	-- below is not an exhaustive list
+			* price/volume
+				* public, rampany, quick
+				* basis of technical analysis
+			* fundamental
+				* reported quarterly
+				* public -- points more to root of the value of the company than the just the price/volume
+			* exogenous
+				* information about the world that affects the company
+				* ex: price of oil affects airline stock
+			* company insiders
+				* important and secretive
+				* ex. CEO knows that a drug you have invented is about to be improved	-- you buy more stock may or may not be legal
+					* reflects information you have that people outside the company do not have
+				* least accessible
+			* each of these types of information has a relationship to the EMH
+	* 3 forms/versions of EHM (from weak to strong)
+		* weak: future prices cannot be predicted by analyzing historical prices 	-- prohibits profiting from technical analysis
+			* the current price reflects all information we might know, so just by looking at these historical prices you can't predict what is going to happen next
+			* notice how this does leave room potentially for fundamental analysis -- silent on fundamental info, insider, etc. because it just pertains to price (a tech indicator) 
+		* semi-strong: prices adjust rapidly/immediately to new public information	-- prohibits profiting from technical or fundamental analysis
+			* when companies have quarterly reports that contain fundamental information, prices react immediately to that information
+			* public information such as quartely reports cause price to adjust quickly
+			* if semi strong is correct that would seem to prohibit fundamental analysis
+		* strong: prices reflect all information public and private 			-- prohibits profiting from technical analysis, fundamental analysis or insider info
+			* even if there's some secret information within the company that points to a higher price later, the price will go up in the face of that knowledge
+			* so if the strong version of EMH is true, it is essentially impossible to make money by holding a portfolio other than the market portfolio
+				* i.e., even insider information can't be leveraged to profit in the market 
+	* is EMH correct??
+		* if it is, then we can't beat the market using any of the previous strategies
+		* strong version of EMH is the least solid 
+			* because we have seen people make money for insider info -- even served jail time
+		* price/earnings ratio corresponding with higher returns -- shows price/earnings ratio are very predictive across many decades of future returns
+			* this refutes the semi strong EMH
 
-
-
-
+* Fundamental Law of active portfolio management
+	* "why diversification is only necessary when investors do not know what they are doing"	- Warren Buffet	discussing investor skill and breadth (number of investments)
+		* this lesson is about how investment performance relates to those 2 factors
 
 
 
