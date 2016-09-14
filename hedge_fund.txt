@@ -736,14 +736,51 @@
 * Fundamental Law of active portfolio management
 	* "why diversification is only necessary when investors do not know what they are doing"	- Warren Buffet	discussing investor skill and breadth (number of investments)
 		* this lesson is about how investment performance relates to those 2 factors
-
-
-
-
-
-
-
-
+	* Grinold's Fundamental Law	-- 1980's Richard Grinold was seeking a method of relating performance, skill and breadth in investing
+		* performance
+			* estimate of performance derived from equation that combines skill and breadth	-> Fundamental Law of Active Portfolio Management
+		* skill
+			* can pick stocks well								-- need some measure of skill
+		* breadth
+			* number of opportunities, methods, or applications to exercise that skill 	-- need some measure of breadth
+		* FLAPM equation
+			* performance = skill * square root of breadth
+				* to improve performance you can either improve skill or increase breadth
+			* information ratio = information coefficient root breadth
+				* sharpe ratio of excess returns	-- manner in which portfolio manageris exceeding the market's performance
+					* skill summarized in information coefficient 
+					* breadth is number of trading opportunities we have
+		* coin flip casino experiment:
+			* flip coins instead of purchasing stocks
+			* the coin is biased -- like alpha - 0.51 heads
+			* uncertainty is like beta
+			* betting
+				* bet N coins
+					* win: get 2N coins
+					* lose: lose all betted coins
+				* casino
+					* 1000 tables
+					* you have 1000 tokens
+					* game runs in parallel
+			* which is bet is better?
+				* bet 1: 1000 tokens on 1 table (0 on 999 tables)
+				* bet 2: 1 token on each of the 1000 tables
+				* both are equivalent
+			* answer:
+				* bet 1: has more risk 49% chance that you will lose all your money on 1 flip
+				* bet 2: has less risk, distributed over 1000 bets, expected return is same as bet 2 but with less risk
+			* reward:
+				* expected return: chance we'll win bet * return we'd get + chance we'd lose bet * amount we would lose
+					* single bet:
+						* expected return = 0.51 * 1000 + 0.49 * -1000
+							* = $20
+					* multi bet: 
+						* expected return = 1000 * (0.51 * 1 + 0.49 * -1) 
+							* = $20
+				* why is multi bet better if expected return is the same for both?
+					* because of risk!
+			* risk:
+				* 
 
 
 
