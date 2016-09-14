@@ -780,20 +780,104 @@
 				* why is multi bet better if expected return is the same for both?
 					* because of risk!
 			* risk:
-				* 
+				* lose it all
+				* risk type 1: risk to lose everything
+					* chance that you lose it all
+						* single bet = 49% chance lose all
+						* multi bet = probability that you lose all on 1st table * probability that you lose on 2nd table ... = .49^1000	-- extremely small number
+				* risk type 2: risk as standard deviation
+					* standard deviation of results of (all) individual bets
+						* multi bet example results: stdev(-1, +1, -1, +1, +1 ... -1) = 1.0
+						* single bet (1 1000 token bet && 999 0 token bets) example results: 
+							* stdev(1000, 0, 0 ... 0) = 31.62	-- 31 times more risk than multi bet 
+							* stdev(-1000, 0, 0 ... 0) = 31.62	-- 31 times more risk than multi bet 
+			* risk adjusted reward
+				* just like Sharpe ratio
+					* single bet: $20 / $31.62 = 0.63
+					* multi bet: $20 / 1 = 20
+						* much higher risk adjusted reward with multi bet 
 
+			* observation
+				* risk adjusted reward (sharpe ratio) of multi bet = 20
+				* risk adjusted reward (sharpe ratio) of single bet = .63
+				* .63 * square root of 1000 = 20 
+				* SRmulti = SRsingle * square root number of bets
+				* if you split your bets evenly across multiple tables, this relationship will hold
+					* i.e., the Sharpe ratio for a single bet is a base case and as we spread it out over more and more table, the Sharpe ratio improves by the square root of that
+					number of bets
+					* this relation is exactly like the Fundamental law of Active portfolio management
+						* performance = skill * square root of breadth 
+							* performance == Sharpe ratio
+							* skill == coin flip bias
+							* breadth == number of coin flips
+							* increasing skill generates higher performance
+							* increasing breadth generates higher performance but it is the square root of the breadth 
+			* 3 lessons
+				1. higher Alpha (aka skill) generates higher Sharpe ratio
+				2. more execution opportunities generates higher Sharpe ratio	-- i.e., more coin flips instead of 1 coin flip
+				3. Sharpe ratio grows as the square root of breadth
 
+			* real world (2 hedge funds)
+				* RenTee trades 100k/day
+				* Warren Buffet holds 120 stocks
+				* can a single theory relate these 2? can it account for the widely differing numbers of trades per year? can it relate the fact they have similar performance
+				and maybe differing levels of skill?
+					* YES! Fundamental Law of Active Portfolio Management
+			* IR, IC, Breadth
+				* Information Ratio (IR)
+					* revised CAPM = (rp(t)) = (Bp)(rm(t)) + (Ap(t))	-- CAPM believes alpha to be on average 0
+			    					  |-----------|   |-----|
+								     market	   skill(residual) of fund manager 		
+						* Sharpe ratio of this skill component is the IR
+							* IR = mean((Ap(t))) / stdev((Ap(t)))
+							       |-----------|   |------------|
+								reward		risk
+							* mean and stdev of alpha of portfolio is calculated by looking back historically at daily values of Alpha
+								* found by finding Beta for portfolio, calculating what the market return component was for each day, the difference is the residual/skill 
+									* beta for entire portfolio (Bp) = E wi * Bi
+													   i 
+									* revised CAPM = (rp(t)) = (Bp)(rm(t)) + (Ap(t))	-- CAPM believes alpha to be on average 0
+					* IR is essentially Sharpe ratio of excess return (component due to skill)
+				* Information Coefficient (IC)
+					* correlation of manager's forecasts to returns
+						* if they made a forecast on IBM that it would go up 1%, and it went up .5% --> a positive correlation
+					* can range from 0 (not present) to 1 (very strong)
+				* Breadth (BR)
+					* number of trading opportunities per year
+						* even if its just a portfolio that buys and holds, you count the number of positions in that portfolio as number of trading opportunities because
+						this is oriented around an annual measure
+			* The Fundamental Law -- Grinold
+				* IR = IC * square root of BR
+					* may be skilled, but must have opportunities to invest in order to operationalize your skill
+					* to improve performance -- improve skill or breadth
+						* sometimes a lot easier to improve breadth -- very hard to improve skill
+			* real world (RenTee vs Buffet reexamined)
+				* Assume...
+					* Both have same IR					-- IR
+					* RenTee's algorithm is 1/1000 as smart as Buffet's	-- IC		
+					* Buffet trades 120/year				-- BR
+				* How many trade must RenTee execute in order to maintain the IR at the same level as Buffet?
+					* we know both have same IR, so set equal to one another...
+						* ICb * square root of 120 = ICr * square root of x
+							* ICb * square root of 120 = ICb/1000 * square root of x
+								* divide both sides by 1000 and multiple both sides by ICb
+								* 1000 * square root of 120 = square root of x
+									* square both sides
+									* 1000^2 * 120 = x
+										* 120,000,000 trades = x
+					* 120,000,000 trades
+					
 
-
-
-
-
-
-
-
-
-
-
+* Portfolio Optimization and the Efficient Frontier 
+	* given:
+		* set of equities
+		* target return
+	* find:
+		* allocation to each equity that minimizes risk
+	
+	* what is risk?
+		* volatility is used as a measure of risk and that is simple the standard deviation of historical daily returns
+		 
 
 
 
