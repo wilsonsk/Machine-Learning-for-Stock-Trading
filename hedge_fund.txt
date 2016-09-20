@@ -878,12 +878,34 @@
 	* what is risk?
 		* volatility is used as a measure of risk and that is simple the standard deviation of historical daily returns
 		 
-
-
-
-
-
-
+	* visualizing risk
+		* invovles plotting stocks on a return/risk plot
+		* a risk/return plot of a portfolio has all stocks plotted 
+			* weighting each asset by a particular weight that represents its allocation within the portfolio 
+				* each weight is combined and we get a portfolio (i.e., a new point on the plot representing the overall portfolio) with properties of each of the stocks
+					* portfolio point usually ends up in the middle of the asset points, depending on the weights of the stocks
+	* can we visualize risk better?
+		* i.e., is it possible to get same returns with less risk?
+			* yes! Harry Markowitz
+				* he discovered people had been overlooking the relationship between stocks in terms of covariance
+					* the resulting performance of a portfolio especially in terms of risk, is not just a blend of the various risks, but it has to do with how the stocks interact
+					day to day
+						* i.e., if we pick the right stocks in the right proportions we can acheive lower risk than any of the individual assets 
+			* a blend of correctly selected and proportioned stocks along with bonds creates lowest risk
+				
+	* importance of covariance
+		* example
+			* 3 stocks: ABC, DEF, GHI each with 10% return 
+			* ABC and DEF move very similarly but GHI moves very different
+				* ABC and DEF have a covariance of daily returns of 0.9 -- they move very closely to one another
+				* NOTE: covariannce between only 2 stocks is the same as correlation coefficient of daily returns 
+				* ABC and GHI have a negative covariance of -0.9 meaning when ABC goes up GHI goes down, when GHI goes up ABC goes down
+					
+			* attempt 1: 50% ABC, 50% DEF -- ends up returning 10% just like the 2 assets its holds
+				* no real advantage in blending these 2 assets because it has the same volatility as each asset themselves
+			* attempt 2: 25% ABC, 25% DEF, 50% GHI	-- 10% return
+				* much smoother (less volatility) because we are blending anti correlated assets together
+				* same return with lower volatilitly than any asset by themselves
 
 
 
