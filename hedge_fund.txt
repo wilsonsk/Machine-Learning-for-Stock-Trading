@@ -907,7 +907,26 @@
 				* much smoother (less volatility) because we are blending anti correlated assets together
 				* same return with lower volatilitly than any asset by themselves
 
-
+	* mean variance optimization (MVO)
+		* Markowitz -- provided insight into this idea of variance and co variance between individual stocks and the recognition that you want to blend those together
+		that have ANTI correlation (A goes up, B goes down; B goes up, A goes down) -- yields a much lower risk portfolio if you combine assets that are anti correlated
+			* overall want the assets to move up together -- i.e., anti correlation in the short term and positive correlation in the long term 
+		* MVO -- an algorithm
+			* provides a way of taking a potential set of assets and figuring out how they should be blended together by looking at their co variance among other things
+			* INPUTS: for each stock
+				* expected return	-- what do we think in the future it will provide in terms of return
+				* volatility		-- historically how volatile has each asset been
+				* covariance		-- matrix: shows between each asset and every other asset what is the correlation of daily returns
+				* target return		-- can target a return from from max return asset and min return asset, anything else between those we can accomplish by blending
+			* OUTPUT:
+				* set of weights for portfolio that minimizes risk and provides target return
+	* The efficient frontier
+		* for any particular return level there is an optimal portfolio
+			* i.e., a portfolio reflects weightings of all the assets that provides the lowest risk for a particular return
+			* can compute for all returns from max to min (although infinite) 
+				* returns a line	-- aka the efficient frontier
+					* represents there are essentially no portfolios above the line (none more optimal) and any portfolios below are sub optimal in some way						* if you draw a tangent line from the origin to the efficient frontier where it hits is the MAX SHARPE RATIO portfolio for all the assets
+			* the efficient frontier is not used for much other than as a theoretical device -- but people do like to plot the efficient frontier to see where their portfolio is in relation to the assets they are using and where they could be in terms of efficiency
 
 
 

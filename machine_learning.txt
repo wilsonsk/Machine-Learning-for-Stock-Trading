@@ -1,0 +1,90 @@
+* how machine learning is used at a hedge fund
+	* in general the focus is on creating a model that can be used to predict future prices towards stock or other assets
+	* machine learning provides a suite of tools that supports a data centric way to build predictive models
+	* the ML problem
+		* scientists talk about algorithms in terms of the problems they solve
+		* the problem machine learning algorithms solve...
+			* in most cases machine learning programs are focused on building a model 
+				* a model: something that takes in observations (of the world), runs them through some sort of process, provides an output (typically a prediction)
+					* example: the observations are some features of stocks, the prediction is a future price 
+					* the observations can be multi dimensional; i.e., there might be multiple factors that we're considering (Bollinger bands, p/e ratio, etc.)
+					* the prediction is typically single dimension 
+				* in machine learning we are trying to use data
+					* the machine learning process:
+						* take historical data, run it through a machine learning algorithm of some sort to generate/learn a model, then at run time (when we need to 
+						use the model) we pass in observations and get outputted predictions -- the model maps these observations to predictions 
+	* supervised regression learning
+		* "regression" -- in this case it means that we are trying to make a numerical approximation/prediction (as opposed to classification learning where we might be trying 
+		to classify an object into one of several types) 
+		* "supervised" -- in this case it means that we provide the machine with many, many axample observations and example output predictions -- that's how it learns the 
+		associations between observations and predictions 
+		* "learning" -- in this case means training system via/with data
+		
+		* there are a lot of algorithms that solve this problem and are supervised learning techniques 
+			* linear regression (parametric) -- a method that finds parameters for a model and discard historic data
+			* k nearest neighbor (knn) (instance based) -- extremely popular approach, keep all historic data that observations and predictions pairs and when it's time to 
+			make a prediction we consult that data (the observation/prediction pairs) finds the k nearest neighbors to its current observation and looks what they say
+			essentially a vote -- that's what makes it instance based
+			* decision trees -- store a tree structure and when a query comes in, it bounces down that tree according to factors of the data, each node in the tree represents
+			a question ("is that observation greater than x?"), eventually we reach a leaf and that is the regression value that is returned
+			* decision forest -- lots and lots of decision trees taken together, query each one to get an overall result
+			
+	* how it works with stock data
+		* take stacks of pandas stock dataframes (differing features like bollinger bands, etc.) 
+		* look at values of our features at a past date
+		* look n days into future at the stock's historical price (a day that has already occured) 
+		* this yields a pairing of features with a prediction, save this instance of data
+		* move forward
+		* reach a point where there are no more predictions data (no more recorded prices)
+		* now have data to run through the algortihm to learn a model 
+	* example process
+		1. select x1, x2, x3 ... features (predictive factors aka measurable quantities about a company that can be predictive of its stock price) 
+		2. select prediction (usually we want to select change in price, market relative change in price, future price) 
+		3. feature/prediction pairs become our data
+		4. consider depth and breadth of data we are going use to train the system with (time period aka how far back in time to go back to train system, stock universe aka 
+		symbols)
+		5. train -- can take this data to train our model; i.e., unleash our machine learning algorithm which takes the data and converts it into a model  
+		6. predict -- measure the quantities about the stocks we want to make a prediction for now, measure observations of today plug into model, model will provide a prediction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
