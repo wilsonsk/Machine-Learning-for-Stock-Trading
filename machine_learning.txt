@@ -73,10 +73,38 @@
 		* generate an orders.txt file from forecast/prediction
 	
 
-
-
-
-
+* Regression
+	* aka numerical model -- using data to build a model that predicts a numerical output based on a set of numerical inputs (observations)
+	* parametric regression -- way of building a model where we represent the model with a number of parameters	
+		* example: predict rainfall amount based on barometric pressure changes 
+			* usually as barometric pressure declines it indicates that "bad" weather is coming (i.e., rain) 
+			* usually as barometric pressure increases it indicates that that "good" weather is coming (i.e., less rain) 
+			* data represented on scatter plot -- each dot represents a day with change in barometric pressure (x axis)  and the amount of rainfall for that day (y axis)
+			* we'd like to create a model based on a set of data where when we query the model at any particular point it will give a prediction of how much it will rain
+				* measure that point's barometric pressure and estimate its rainfall 
+			* classic solution is to fit a line to the data -- aka LINEAR REGRESSION
+				* the model looks like -- y = mx + b
+					* x -- barometric pressure change 
+					* m && b -- the parameters of our model
+						* our model is now fully described by these 2 parameters and if we want to estimate/query how much it will rain at any particular point,
+							* we measure the barometric pressure, plug that measurement into our model (as the x variable) 
+								* solve the y = mx + b equation to the get the y axis (aka the amount of rainfall for that point)
+					* the linear regression approach is how we arrive at m and b 
+				* linear regression does not track the actual behavior of the data -- we can make a more complex model -> parametric regression 
+		* parametric regression
+			* instead fitting a line to data, we can fit a polynomial to the data (add one more term) 
+				* y = ax^2 + mx + b	-- model now represented by 3 parameters (a, m, b) 
+				* in general these parametric approaches come away with a number of parameters -- the more complex the model, the more parameters
+				* in the end we throw away the data and the model is represented by just the parameters
+	* k nearest neighbor (knn) regression
+		* data centric (aka instance based) approach  
+		* keep the data and use it when we make a query
+		* example: barometric pressure and rain
+			* select a query (change in barometric pressure for a given day)
+				* assume query = -5mm; assume k = 3
+			 		* therefore, we will find the 3 nearest historical data points to this query 
+						* we will then use those 3 nearest neighbors to estimate how much it will rain
+							* i.e., we take the mean of their y values (i.e., their rainfall amounts) 
 
 
 
