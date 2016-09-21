@@ -46,8 +46,32 @@
 		5. train -- can take this data to train our model; i.e., unleash our machine learning algorithm which takes the data and converts it into a model  
 		6. predict -- measure the quantities about the stocks we want to make a prediction for now, measure observations of today plug into model, model will provide a prediction
 
-
-
+	* backtesting
+		* how accurate our these forecasts? can you act on them? 
+			* a first step answer can be found by backtesting
+				* i.e., roll back time and test your system
+					* in order to test capabilities of our approach, we have to limit the data it sees to a certain amount of time and then make predictions into the
+					simulated future
+				
+	* problems with regression
+		* performance in the real world not as "awesome" as in backtesting
+		* problems:
+			* noisy and uncertain -- value but has to accumulated over many trading opportunities
+			* challening to estimate confidence -- hard to know how confident you should be in a forecast -- if you did know you could bet less on forecasts that are less
+			certain
+			* holding time and allocation -- not clear on how long you should hold a position that might have arisen from a forecast and how you should have allocated to that
+			position
+		* alternative to regression -- policy learning
+			* reinforcement learning -- instead of making a forecast of a future price, system learns a policy and a policy tells a system whether to buy or sell a stock
+	* problems we will focus on
+		* look a certain period of data
+		* train model over that period
+		* make forecasts and trade over some other period
+		* implement several ML algorithms to create different models, we will compare them one against the other
+		* test another time period beyond our data time period, this will become our observations
+		* pass those observations through our model to create a prediction
+		* generate an orders.txt file from forecast/prediction
+	
 
 
 
