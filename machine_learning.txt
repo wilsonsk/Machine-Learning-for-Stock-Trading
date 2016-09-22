@@ -105,10 +105,22 @@
 			 		* therefore, we will find the 3 nearest historical data points to this query 
 						* we will then use those 3 nearest neighbors to estimate how much it will rain
 							* i.e., we take the mean of their y values (i.e., their rainfall amounts) 
+	* kernel regression
+		* give a weight to each of the contributions of the nearest neighbor data points according to how distant they are  
 
+	* parametric vs non parametric
+		* parametric -- biased: we have an initial guess of what the form of the equation/solution is 
+			* pros: we don't have to store the original data -- space efficient -- querying is fast
+			* cons: we can't easily update the model as more data is gathered -- usually have to do a complete re run of the ML algorithm to update model
+				-- training is slow
+		* non-parametric (instance based) -- unbiased:  
+			* pros: new data/evidence/observations can be added easily since no parameters need to be learned, adding data points doesn't consume additional
+			time -- training is fast
+			* cons: we have to store all the data points -- it's hard to apply when we have a huge data set -- querying is slow
+			* avoid having to assume a certain type of model (linear, quadratic, etc.) -- suitable to fit complex patterns where we don't really know what 
+			the underlying model is like 
 
-
-
+		
 
 
 
