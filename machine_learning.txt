@@ -120,7 +120,12 @@
 			* avoid having to assume a certain type of model (linear, quadratic, etc.) -- suitable to fit complex patterns where we don't really know what 
 			the underlying model is like 
 
-		
+	* training and testing
+		* assume we have some set of features (i.e., multi dimensional observations) and we want to get a prediction outputted
+			* in order to evaluate our learning algorithms in a scientific manner, we need to split this data into at least 2 sections: training section, testing section
+			* if trained over the same data that we tested over, the results would be suspicious because we should obviously do very well if we test over the same data we train on
+				* this procedure of separating testing and training data is called Out of Sample Testing -- a very important and essential technique
+			* 
 
 
 
